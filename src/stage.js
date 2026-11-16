@@ -5,6 +5,7 @@ import * as THREE from "three";
 import { GLTFLoader } from "three/addons/loaders/GLTFLoader.js";
 import { DRACOLoader } from "three/addons/loaders/DRACOLoader.js";
 import { MeshoptDecoder } from "three/addons/libs/meshopt_decoder.module.js";
+import { RoomEnvironment } from "three/addons/environments/RoomEnvironment.js";
 
 const FACES = ["neutral", "smug", "nervous", "shocked", "angry", "sad", "triumphant"];
 
@@ -32,6 +33,10 @@ export class Stage {
 
     this.scene = new THREE.Scene();
     this.scene.background = new THREE.Color("#1b1a19");
+    // soft studio reflections so PBR materials from generated models don't go black
+    const pmrem = new THREE.PMREMGenerator(this.renderer);
+    this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
+    this.scene.environmentIntensity = 0.45;
     this.camera = new THREE.PerspectiveCamera(28, 1, 0.05, 100);
     this.camera.position.set(0, 1.55, 3.4);
     this.lookTarget = new THREE.Vector3(0, 1.38, 0);
@@ -180,7 +185,7 @@ export class Stage {
 
   // ---- characters ----------------------------------------------------------
 
-  async loadCharacter(character) {
+  async loadCharacter(character, onFirst = () => {}) {
     const urls = character?.models || {};
     const loader = new GLTFLoader();
     const draco = new DRACOLoader();
@@ -200,6 +205,7 @@ export class Stage {
     if (!neutral) {
       this._buildFallback(character?.fallback || {});
       this.usingFallback = true;
+      onFirst();
       return { fallback: true };
     }
     this.rotY = THREE.MathUtils.degToRad(Number(new URLSearchParams(location.search).get("rot")) || character.rotationY || 0);
@@ -207,6 +213,7 @@ export class Stage {
     this.models.neutral = neutral;
     this.rig.add(neutral);
     this.setFace("neutral", { flash: false });
+    onFirst();
 
     // The rest stream in; any that fail just reuse neutral with a reaction.
     await Promise.all(
@@ -230,7 +237,9 @@ export class Stage {
         o.receiveShadow = true;
         if (o.material) {
           o.material.side = THREE.FrontSide;
-          if ("roughness" in o.material) o.material.roughness = Math.max(o.material.roughness ?? 0.6, 0.45);
+          // Caricatures read as painted clay: no metal, never glossy.
+          if ("metalness" in o.material) o.material.metalness = 0;
+          if ("roughness" in o.material) o.material.roughness = Math.max(o.material.roughness ?? 0.6, 0.55);
         }
       }
     });

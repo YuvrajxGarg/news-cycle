@@ -37,7 +37,7 @@ async function boot() {
   $("foot").innerHTML = `<p>${esc(state.pack.parody)}</p>`;
 
   stage = new Stage($("stage"));
-  stage.loadCharacter(state.pack.character).then((r) => {
+  stage.loadCharacter(state.pack.character, () => $("loading")?.remove()).then((r) => {
     document.body.dataset.character = r.fallback ? "fallback" : "model";
   });
 
