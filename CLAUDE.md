@@ -2,7 +2,9 @@
 
 Parody "write the scandal statement" game. Read `README.md`.
 
-- Plain ES modules + three.js (CDN importmap), no build step. One serverless function, `api/judge.js` (Claude judge, needs `ANTHROPIC_API_KEY`); the page must keep working without it.
+Mechanic (Yuvraj, v3): 5 real questions, 20 s each, 5 written answers per question (1 neutral, 1 diplomatic, 1 charismatic, 2 risky jokes: edgy + unhinged), no free typing. 4 audience groups per question with visible tastes; scoring must stay transparent so players can strategise.
+
+- Plain ES modules + three.js (CDN importmap), no build step. One serverless function, `api/react.js` (Claude audience reactions, needs `ANTHROPIC_API_KEY`); the page must keep working without it.
 - Content is data: one JSON pack per scandal in `packs/`. Keep the game engine subject-agnostic.
 - Packs follow the real news cycle (facts in `context`, links in `sources`). Real people are parody only: no sexual or romantic jokes, no new allegations, no invented quotes presented as real, parody label stays
   in the footer and masthead. Consequence headlines are jokes about news coverage, not claims of fact.

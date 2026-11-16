@@ -8,8 +8,9 @@
   "setup": {
     "kicker": "Week one",
     "headline": "He's out. Or is he?",
-    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. Five questions. You get the first words of each answer; finish them."
+    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. Five real questions. Twenty seconds each. Pick his answer."
   },
+  "context": "Real situation, mid-November 2026: Nov 8 the Nvidia board opened an independent investigation into reports Huang was the target of a foreign intelligence effort (a contact linked to Megaspeed, a Singapore firm that bought billions in Nvidia gear and is probed over export controls). The FBI is looking into it. Nov 12 he resigned as CEO and director; CFO Colette Kress became interim CEO and Harvey Jones the first board chair. Nvidia lost over $600B in market value that week. Nov 14 two major investors urged the board to consider his return. House committee chairs want him at a closed-door briefing on Nov 18; his trip to APEC in Shenzhen is in doubt. Keep everything non-sexual.",
   "character": {
     "name": "Jensen",
     "scale": 1,
@@ -32,151 +33,6 @@
     "rotationY": -90,
     "source": "Higgsfield: GPT Image 2.6 caricature per expression -> Tripo H3.1 image-to-3D (2026-11-16)"
   },
-  "rounds": [
-    {
-      "asker": "Reporter outside his house",
-      "outlet": "THE WIRE",
-      "question": "Did you resign, or were you pushed?",
-      "starter": "Let me be clear:"
-    },
-    {
-      "asker": "National security desk",
-      "outlet": "TICKR",
-      "question": "Did you know your contact was an alleged spy?",
-      "starter": "In my defense,"
-    },
-    {
-      "asker": "Capitol Hill reporter",
-      "outlet": "GLOBAL DESK",
-      "question": "Congress wants you at a closed-door briefing on the 18th. Will you show?",
-      "starter": "To Congress, I say"
-    },
-    {
-      "asker": "Shareholder on the call",
-      "outlet": "LIVE",
-      "question": "$600 billion gone in a week. What do you tell us?",
-      "starter": "Dear shareholders, relax:"
-    },
-    {
-      "asker": "Two big investors",
-      "outlet": "EXCLUSIVE",
-      "question": "We want you back as CEO. What's your pitch to the board?",
-      "starter": "Take me back because"
-    }
-  ],
-  "fallback": {
-    "own": {
-      "face": "neutral",
-      "headlines": [
-        "Statement too reasonable to clip",
-        "Board quietly takes notes",
-        "Legal team exhales"
-      ],
-      "why": "Plain and true leaves nothing to debunk.",
-      "score": 72,
-      "verdict": "Owned it"
-    },
-    "deny": {
-      "face": "smug",
-      "headlines": [
-        "FBI has entered the chat",
-        "Receipts surface within the hour",
-        "Stock down 4%"
-      ],
-      "why": "Every denial is a promise the next leak can break.",
-      "score": 24,
-      "verdict": "Flat denial"
-    },
-    "deflect": {
-      "face": "nervous",
-      "headlines": [
-        "Question asked again, louder",
-        "Congress adds a chair for him anyway"
-      ],
-      "why": "Reporters repeat the question. Viewers notice.",
-      "score": 42,
-      "verdict": "Smooth dodge"
-    },
-    "attack": {
-      "face": "angry",
-      "headlines": [
-        "Boardroom offended",
-        "Chinese government is looking for you",
-        "Washington is also looking for you"
-      ],
-      "why": "Attacking the messenger tells everyone the message was real.",
-      "score": 14,
-      "verdict": "Shot the messenger"
-    },
-    "joke": {
-      "face": "triumphant",
-      "headlines": [
-        "Clip goes viral, problem does not",
-        "Leather jacket trends worldwide"
-      ],
-      "why": "Jokes win the clip, not the argument.",
-      "score": 62,
-      "verdict": "Got the laugh"
-    },
-    "hype": {
-      "face": "triumphant",
-      "headlines": [
-        "Stock up 2%, credibility down 20%",
-        "Analysts: 'that's a lot of adjectives'"
-      ],
-      "why": "Big numbers move the stock, not the story.",
-      "score": 45,
-      "verdict": "Pure hype"
-    },
-    "vague": {
-      "face": "smug",
-      "headlines": [
-        "Statement says nothing, beautifully",
-        "Interim CEO looks relieved"
-      ],
-      "why": "Corporate fog reads as hiding something.",
-      "score": 30,
-      "verdict": "Corporate fog"
-    }
-  },
-  "endings": [
-    {
-      "min": 400,
-      "kicker": "Final edition",
-      "headline": "THE COMEBACK.",
-      "dek": "The board takes him back. The jacket returns to the keynote.",
-      "face": "triumphant"
-    },
-    {
-      "min": 300,
-      "kicker": "Final edition",
-      "headline": "BACK BY CHRISTMAS?",
-      "dek": "Investors are sold. The board wants one more week.",
-      "face": "smug"
-    },
-    {
-      "min": 200,
-      "kicker": "Final edition",
-      "headline": "FOUNDER EMERITUS.",
-      "dek": "A nice title, a nice office, no keys.",
-      "face": "nervous"
-    },
-    {
-      "min": 100,
-      "kicker": "Final edition",
-      "headline": "STILL OUT.",
-      "dek": "The board thanks him for his contributions. Again.",
-      "face": "sad"
-    },
-    {
-      "min": 0,
-      "kicker": "Final edition",
-      "headline": "SUBPOENAED.",
-      "dek": "Legal has asked everyone to stop typing.",
-      "face": "shocked"
-    }
-  ],
-  "context": "Real situation, mid-November 2026: Nov 8 the Nvidia board opened an independent investigation into reports Huang was the target of a foreign intelligence effort (a contact linked to Megaspeed, a Singapore firm that bought billions in Nvidia gear and is probed over export controls). The FBI is looking into it. Nov 12 he resigned as CEO and director; CFO Colette Kress became interim CEO and Harvey Jones the first board chair. Nvidia lost over $600B in market value that week. Nov 14 two major investors urged the board to consider his return. House committee chairs want him at a closed-door briefing on Nov 18; his trip to APEC in Shenzhen is in doubt. Keep everything non-sexual.",
   "sources": [
     {
       "label": "Nvidia board statement (Nov 8)",
@@ -193,6 +49,451 @@
     {
       "label": "CNBC: investors urge his return (Nov 14)",
       "url": "https://www.cnbc.com/2026/11/14/nvidia-investors-jensen-huang-return-board-letter.html"
+    }
+  ],
+  "styles": {
+    "neutral": {
+      "label": "Neutral",
+      "color": "#8a857a"
+    },
+    "diplomatic": {
+      "label": "Diplomatic",
+      "color": "#2f6fed"
+    },
+    "charismatic": {
+      "label": "Charismatic",
+      "color": "#e0a800"
+    },
+    "edgy": {
+      "label": "Edgy joke",
+      "color": "#e8352b"
+    },
+    "unhinged": {
+      "label": "Unhinged joke",
+      "color": "#8b3fd9"
+    }
+  },
+  "groups": {
+    "washington": {
+      "name": "Washington",
+      "kind": "Political",
+      "taste": {
+        "neutral": 1,
+        "diplomatic": 2,
+        "charismatic": 0,
+        "edgy": -3,
+        "unhinged": -2
+      },
+      "persona": "US lawmakers and officials worried about national security and export controls",
+      "lines": {
+        "love": "Finally, a grown-up answer.",
+        "like": "We can work with that.",
+        "meh": "Noted for the record.",
+        "hate": "Schedule the subpoena."
+      }
+    },
+    "beijing": {
+      "name": "Beijing",
+      "kind": "Political",
+      "taste": {
+        "neutral": 1,
+        "diplomatic": 3,
+        "charismatic": -1,
+        "edgy": -3,
+        "unhinged": -1
+      },
+      "persona": "Chinese state media and officials, a huge buyer of Nvidia chips, allergic to being the punchline",
+      "lines": {
+        "love": "A respectful partner. Good.",
+        "like": "Acceptable.",
+        "meh": "State TV is not airing this.",
+        "hate": "Customs just found a problem with your shipment."
+      }
+    },
+    "wallst": {
+      "name": "Wall Street",
+      "kind": "Capitalist",
+      "taste": {
+        "neutral": 0,
+        "diplomatic": 1,
+        "charismatic": 3,
+        "edgy": -1,
+        "unhinged": -2
+      },
+      "persona": "Investors and analysts who want confidence, growth and the stock back up",
+      "lines": {
+        "love": "Buy. Buy. Buy.",
+        "like": "Upgrading to \"hold with feelings\".",
+        "meh": "Priced in.",
+        "hate": "Short everything."
+      }
+    },
+    "board": {
+      "name": "The Board",
+      "kind": "Governance",
+      "taste": {
+        "neutral": 1,
+        "diplomatic": 3,
+        "charismatic": -1,
+        "edgy": -3,
+        "unhinged": -3
+      },
+      "persona": "Eleven independent directors and a brand-new chair who want governance, not drama",
+      "lines": {
+        "love": "That is the founder we remember.",
+        "like": "Measured. We approve.",
+        "meh": "Legal will review.",
+        "hate": "This is exactly why we met on Wednesday."
+      }
+    },
+    "staff": {
+      "name": "Nvidia Staff",
+      "kind": "Sociological",
+      "taste": {
+        "neutral": 0,
+        "diplomatic": 1,
+        "charismatic": 3,
+        "edgy": 1,
+        "unhinged": 0
+      },
+      "persona": "Employees who love their founder and just want to keep shipping",
+      "lines": {
+        "love": "Printing this on a hoodie.",
+        "like": "Okay, morale slightly up.",
+        "meh": "Back to work, I guess.",
+        "hate": "Updating LinkedIn."
+      }
+    },
+    "internet": {
+      "name": "The Internet",
+      "kind": "Sociological",
+      "taste": {
+        "neutral": -1,
+        "diplomatic": -1,
+        "charismatic": 1,
+        "edgy": 3,
+        "unhinged": 3
+      },
+      "persona": "Gen Z, meme accounts and the timeline, who reward chaos and punish corporate speak",
+      "lines": {
+        "love": "LEATHER JACKET KING.",
+        "like": "ok that was kinda fire",
+        "meh": "ratio",
+        "hate": "least corporate press release"
+      }
+    },
+    "philosophers": {
+      "name": "Philosophers",
+      "kind": "Philosophical",
+      "taste": {
+        "neutral": 0,
+        "diplomatic": 2,
+        "charismatic": -1,
+        "edgy": -1,
+        "unhinged": 2
+      },
+      "persona": "Thinkers who value honesty and appreciate absurdism when it reveals something true",
+      "lines": {
+        "love": "Camus would have nodded.",
+        "like": "Honest, at least.",
+        "meh": "Neither true nor interesting.",
+        "hate": "Sophistry in a leather jacket."
+      }
+    },
+    "ethicists": {
+      "name": "Ethicists",
+      "kind": "Philosophical",
+      "taste": {
+        "neutral": 1,
+        "diplomatic": 2,
+        "charismatic": -2,
+        "edgy": -3,
+        "unhinged": -1
+      },
+      "persona": "Ethics and governance scholars who want accountability, not charm",
+      "lines": {
+        "love": "Accountability, at last.",
+        "like": "A step in the right direction.",
+        "meh": "Insufficient.",
+        "hate": "Case study for next semester. Not a good one."
+      }
+    },
+    "press": {
+      "name": "The Press",
+      "kind": "Media",
+      "taste": {
+        "neutral": -2,
+        "diplomatic": 0,
+        "charismatic": 1,
+        "edgy": 3,
+        "unhinged": 2
+      },
+      "persona": "Reporters who need a quote that makes the front page and hate empty statements",
+      "lines": {
+        "love": "Front page. Thank you.",
+        "like": "Decent pull quote.",
+        "meh": "Page 14.",
+        "hate": "He said nothing. We will print that."
+      }
+    },
+    "gamers": {
+      "name": "Gamers",
+      "kind": "Customers",
+      "taste": {
+        "neutral": 0,
+        "diplomatic": -1,
+        "charismatic": 2,
+        "edgy": 2,
+        "unhinged": 3
+      },
+      "persona": "PC gamers, the original GeForce fans, who want memes and cheaper GPUs",
+      "lines": {
+        "love": "GOAT. Now drop GPU prices.",
+        "like": "W",
+        "meh": "Still waiting on stock.",
+        "hate": "L. Also my card is still $1,999."
+      }
+    }
+  },
+  "rounds": [
+    {
+      "asker": "Reporter outside his house",
+      "outlet": "THE WIRE",
+      "question": "Did you resign, or were you pushed?",
+      "source": "The board accepted his resignation on Nov 12, hours after reports it was preparing to remove him.",
+      "groups": [
+        "board",
+        "wallst",
+        "press",
+        "staff"
+      ],
+      "options": [
+        {
+          "style": "neutral",
+          "text": "I've stepped down. I have nothing further to add."
+        },
+        {
+          "style": "diplomatic",
+          "text": "The board and I agreed it was the right call for Nvidia, and I respect it."
+        },
+        {
+          "style": "charismatic",
+          "text": "Pushed? Nobody pushes me. I walked out, and I took the jacket."
+        },
+        {
+          "style": "edgy",
+          "text": "At a $4 trillion company, resigned and pushed are the same verb."
+        },
+        {
+          "style": "unhinged",
+          "text": "I was not pushed. I was rendered. In 4K. With ray tracing."
+        }
+      ]
+    },
+    {
+      "asker": "White House press pool",
+      "outlet": "TICKR",
+      "question": "The President says you told him you had no idea your contact was an alleged spy. True?",
+      "source": "On Nov 9 the President said the FBI was looking into it and that Huang told him he had no idea.",
+      "groups": [
+        "washington",
+        "beijing",
+        "ethicists",
+        "internet"
+      ],
+      "options": [
+        {
+          "style": "neutral",
+          "text": "That's a matter for the investigation. I'm cooperating fully."
+        },
+        {
+          "style": "diplomatic",
+          "text": "I told the President the truth, and I'll tell investigators the same."
+        },
+        {
+          "style": "charismatic",
+          "text": "If I'd known, do you think I'd still be taking your calls?"
+        },
+        {
+          "style": "edgy",
+          "text": "In Silicon Valley everyone's a spy. We just call it networking."
+        },
+        {
+          "style": "unhinged",
+          "text": "I can't detect spies. I can only detect frame drops."
+        }
+      ]
+    },
+    {
+      "asker": "Capitol Hill reporter",
+      "outlet": "GLOBAL DESK",
+      "question": "Three House committee chairs want you at a closed-door briefing on Nov 18, or a subpoena. Will you go?",
+      "source": "Three House Republican committee chairs asked him to attend a closed-door briefing on Nov 18.",
+      "groups": [
+        "washington",
+        "press",
+        "internet",
+        "philosophers"
+      ],
+      "options": [
+        {
+          "style": "neutral",
+          "text": "My lawyers are reviewing the request."
+        },
+        {
+          "style": "diplomatic",
+          "text": "I'll be there on the 18th and answer every question I can."
+        },
+        {
+          "style": "charismatic",
+          "text": "Congress wants a briefing? I'll bring slides. They'll love the slides."
+        },
+        {
+          "style": "edgy",
+          "text": "Do they want a briefing, or to finally learn what a GPU is?"
+        },
+        {
+          "style": "unhinged",
+          "text": "I'll attend as a hologram, rendered live on 72 H200s."
+        }
+      ]
+    },
+    {
+      "asker": "Shareholder on the call",
+      "outlet": "LIVE",
+      "question": "Nvidia lost $600 billion in a week. What do you tell us?",
+      "source": "Nvidia lost more than $600 billion in market value in the week of Nov 9.",
+      "groups": [
+        "wallst",
+        "staff",
+        "gamers",
+        "press"
+      ],
+      "options": [
+        {
+          "style": "neutral",
+          "text": "Our fundamentals are unchanged. Demand remains strong."
+        },
+        {
+          "style": "diplomatic",
+          "text": "I'm sorry for the turbulence. The team that built this is still here."
+        },
+        {
+          "style": "charismatic",
+          "text": "We lost $600 billion in a week. We'll make it back by Christmas. Watch."
+        },
+        {
+          "style": "edgy",
+          "text": "Relax. It's only one Apple. We have more."
+        },
+        {
+          "style": "unhinged",
+          "text": "Think of it as a discount. Buy the dip. Buy my jacket. Buy everything."
+        }
+      ]
+    },
+    {
+      "asker": "Two major investors",
+      "outlet": "EXCLUSIVE",
+      "question": "We asked the board to consider your return. What is your pitch?",
+      "source": "On Nov 14 two major investors urged the board to consider the potential return of Jensen Huang.",
+      "groups": [
+        "board",
+        "wallst",
+        "philosophers",
+        "internet"
+      ],
+      "options": [
+        {
+          "style": "neutral",
+          "text": "That's the board's decision."
+        },
+        {
+          "style": "diplomatic",
+          "text": "I'd only come back if the board, the investigation and the staff all agree."
+        },
+        {
+          "style": "charismatic",
+          "text": "I started this company in a Denny's booth. Give me the keys and a booth."
+        },
+        {
+          "style": "edgy",
+          "text": "Take me back, or enjoy explaining CUDA to the next CEO."
+        },
+        {
+          "style": "unhinged",
+          "text": "Reinstate me and I will hand-deliver every GPU. By scooter."
+        }
+      ]
+    }
+  ],
+  "faces": {
+    "great": "triumphant",
+    "good": "smug",
+    "meh": "neutral",
+    "bad": "nervous",
+    "awful": "shocked"
+  },
+  "headlines": {
+    "great": [
+      "Founder energy is back",
+      "Stock up 4% in after-hours",
+      "Board quietly reopens his calendar"
+    ],
+    "good": [
+      "Analysts: 'that'll play'",
+      "Cable news runs it twice"
+    ],
+    "meh": [
+      "Statement changes nothing",
+      "News cycle shrugs"
+    ],
+    "bad": [
+      "Boardroom offended",
+      "Stock down 4%",
+      "Comms team requests a vacation"
+    ],
+    "awful": [
+      "Chinese government is looking for you",
+      "Washington is also looking for you",
+      "Legal asks everyone to stop talking"
+    ]
+  },
+  "endings": [
+    {
+      "min": 380,
+      "kicker": "Final edition",
+      "headline": "THE COMEBACK.",
+      "dek": "The board takes him back. The jacket returns to the keynote.",
+      "face": "triumphant"
+    },
+    {
+      "min": 260,
+      "kicker": "Final edition",
+      "headline": "BACK BY CHRISTMAS?",
+      "dek": "Investors are sold. The board wants one more week.",
+      "face": "smug"
+    },
+    {
+      "min": 140,
+      "kicker": "Final edition",
+      "headline": "FOUNDER EMERITUS.",
+      "dek": "A nice title, a nice office, no keys.",
+      "face": "nervous"
+    },
+    {
+      "min": 0,
+      "kicker": "Final edition",
+      "headline": "STILL OUT.",
+      "dek": "The board thanks him for his contributions. Again.",
+      "face": "sad"
+    },
+    {
+      "min": -99999,
+      "kicker": "Final edition",
+      "headline": "SUBPOENAED.",
+      "dek": "Legal has asked everyone to stop typing.",
+      "face": "shocked"
     }
   ]
 }
