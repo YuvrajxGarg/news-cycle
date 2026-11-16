@@ -201,11 +201,11 @@ function editor() {
     };
     b.innerHTML = pick ? `${esc(pick.text)}<i>▾</i>` : `<span class="ph">${n + 1}</span><i>▾</i>`;
     b.setAttribute("aria-label", `Blank ${n + 1}${pick ? `: ${pick.text}` : ", empty"}`);
-    b.onclick = () => {
+    b.onclick = (e) => {
+      e.stopPropagation();
       audio.sfx.tick(false);
-      state.active = n;
-      editor();
-      $("panel").querySelector(".picker")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      if (doc.querySelector(`.menu[data-n="${n}"]`)) return closeMenu();
+      openMenu(n, b, doc);
     };
     doc.append(b);
   });
@@ -218,19 +218,48 @@ function editor() {
   send.onclick = release;
   row.append(send);
 
-  p.append(picker(state.active));
   p.append(row);
   showQuestion(null);
 }
 
+// The dropdown opens right under the blank, inside the statement.
+function openMenu(n, blankEl, doc) {
+  closeMenu();
+  state.active = n;
+  doc.querySelectorAll(".blank.active").forEach((x) => x.classList.remove("active"));
+  blankEl.classList.add("active");
+  renderDots();
+  const menu = picker(n);
+  menu.dataset.n = n;
+  menu.addEventListener("click", (e) => e.stopPropagation());
+  doc.append(menu);
+  const top = blankEl.offsetTop + blankEl.offsetHeight + 6;
+  menu.style.top = `${top}px`;
+  doc.style.paddingBottom = "";
+  const need = top + menu.offsetHeight + 12 - doc.clientHeight;
+  if (need > 0) doc.style.paddingBottom = `${need + 16}px`;
+  menu.scrollIntoView({ block: "nearest", behavior: "smooth" });
+}
+
+function closeMenu() {
+  const doc = document.querySelector(".release");
+  doc?.querySelector(".menu")?.remove();
+  if (doc) doc.style.paddingBottom = "";
+  doc?.querySelectorAll(".blank.active").forEach((x) => x.classList.remove("active"));
+}
+
+document.addEventListener("click", () => closeMenu());
+document.addEventListener("keydown", (e) => {
+  if (e.key === "Escape") closeMenu();
+});
+
 function picker(n) {
   const b = blanks()[n];
-  const box = el("div", "picker");
-  box.append(el("div", "sub", `Blank ${n + 1}`));
-  const opts = el("div", "options");
+  const box = el("div", "menu");
+  const opts = el("div", "menu-opts");
   state.order[n].forEach((o, i) => {
-    const btn = el("button", `opt${state.picks[n]?.text === o.text ? " chosen" : ""}`);
-    btn.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body"><span class="opt-text">${esc(o.text)}</span></span>`;
+    const btn = el("button", `mopt${state.picks[n]?.text === o.text ? " chosen" : ""}`, esc(o.text));
+    btn.type = "button";
     btn.onclick = () => choose(n, o);
     opts.append(btn);
   });
@@ -239,7 +268,7 @@ function picker(n) {
   // or write your own
   const own = el("form", "own");
   const typed = state.picks[n]?.typed ? state.picks[n].text : "";
-  own.innerHTML = `<label class="sub" for="own-${n}">Or write your own</label><div class="own-row"><input id="own-${n}" maxlength="${MAX_OWN}" autocomplete="off" placeholder="${esc(b.hint || "Type anything")}" value="${esc(typed)}" /><button class="btn" type="submit">Use it</button></div>`;
+  own.innerHTML = `<div class="own-row"><input id="own-${n}" aria-label="Write your own" maxlength="${MAX_OWN}" autocomplete="off" placeholder="Or type your own…" value="${esc(typed)}" /><button type="submit">Use</button></div>`;
   own.onsubmit = (e) => {
     e.preventDefault();
     const v = clean(own.querySelector("input").value);
@@ -260,16 +289,12 @@ function choose(n, o) {
   audio.sfx.select();
   state.picks[n] = o;
   stage.setFace(o.typed ? "nervous" : state.pack.faces.byStyle?.[o.style] || "neutral");
-  // move on to the next empty blank, if any
   const next = blanks().findIndex((_, i) => !state.picks[i]);
-  if (next >= 0) state.active = next;
+  state.active = next >= 0 ? next : n;
+  const y = window.scrollY;
   editor();
-  if (next < 0) {
-    toast("Statement ready. Release it.");
-    $("panel").querySelector(".write-row .btn")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
-  } else if (window.innerWidth <= 860) {
-    $("panel").querySelector(".release")?.scrollIntoView({ block: "start", behavior: "smooth" });
-  }
+  window.scrollTo(0, y);
+  if (next < 0) toast("Statement ready. Release it.");
 }
 
 function fullText() {
