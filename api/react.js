@@ -42,12 +42,12 @@ const SCHEMA = {
 const cut = (s, n) => String(s ?? "").replace(/\s+/g, " ").trim().slice(0, n);
 
 export default async function handler(req, res) {
+  if (req.method === "GET" && req.query?.health === "1") return health(res);
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
   if (!process.env.ANTHROPIC_API_KEY) {
     console.error("react: ANTHROPIC_API_KEY missing in this deployment");
     return res.status(503).json({ error: "ANTHROPIC_API_KEY is not set" });
   }
-  if (false) return res.status(503).json({ error: "ANTHROPIC_API_KEY is not set" });
 
   const body = typeof req.body === "string" ? safeJSON(req.body) : req.body || {};
   const groups = (Array.isArray(body.groups) ? body.groups : []).slice(0, 6).map((g) => ({
@@ -100,6 +100,25 @@ export default async function handler(req, res) {
     if (err instanceof Anthropic.RateLimitError) return res.status(429).json({ error: "busy" });
     if (err instanceof Anthropic.APIError) return res.status(502).json({ error: `react failed (${err.status})` });
     return res.status(502).json({ error: "react failed" });
+  }
+}
+
+// GET /api/react?health=1: one tiny judge call, reports whether the judges work (no secrets returned).
+async function health(res) {
+  if (!process.env.ANTHROPIC_API_KEY) return res.status(200).json({ ok: false, reason: "no ANTHROPIC_API_KEY in this deployment" });
+  try {
+    const msg = await new Anthropic().messages.create(
+      {
+        model: MODEL,
+        max_tokens: 200,
+        output_config: { effort: "low", format: { type: "json_schema", schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"], additionalProperties: false } } },
+        messages: [{ role: "user", content: "Reply ok true." }],
+      },
+      { timeout: 15000, maxRetries: 0 },
+    );
+    return res.status(200).json({ ok: true, model: MODEL, stop: msg.stop_reason });
+  } catch (err) {
+    return res.status(200).json({ ok: false, model: MODEL, status: err?.status ?? null, error: String(err?.message || err).slice(0, 300) });
   }
 }
 
