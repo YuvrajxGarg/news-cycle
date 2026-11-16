@@ -1,22 +1,21 @@
-// POST /api/react: the audience panel reacts to the statement the player picked.
+// POST /api/react: the judges react, as each audience, to the full statement the player assembled.
 // Base points come from each group's visible taste chart (client side). Claude adds a small bonus
-// (-5..+5 per group) for how the exact wording lands with that group, a one-line reaction in the
+// (-5..+5 per group) for how the whole statement lands with that group, a one-line reaction in the
 // group's voice, and the news ticker. Needs ANTHROPIC_API_KEY; without it this returns 503 and the
 // page uses the pack's canned lines with no bonus, so the game still works.
 import Anthropic from "@anthropic-ai/sdk";
 
 const MODEL = process.env.JUDGE_MODEL || "claude-haiku-5-5";
 const FACES = ["neutral", "smug", "nervous", "shocked", "angry", "sad", "triumphant"];
-const STYLES = ["neutral", "diplomatic", "charismatic", "edgy", "unhinged"];
 
-const SYSTEM = `You voice the audience in PRESS CYCLE, a parody party game about the real news cycle.
-A public figure is in a real, ongoing scandal. A reporter asks a real question; the player picks one of five prepared statements for the figure. Each statement has a style (neutral, diplomatic, charismatic, edgy joke, unhinged joke). Four audience groups judge it. Each group already gives base points from its fixed taste for that style; you do NOT change those.
+const SYSTEM = `You are the judges in PRESS CYCLE, a parody party game about the real news cycle.
+A public figure is in a real, ongoing scandal. The player assembled the figure's full press statement by filling blanks with prepared fragments, so it may be consistent or wildly mixed in tone. Several audience groups hear it. Each group already got base points from how its taste matches the fragments it heard; you do NOT change those.
 
-For each group return:
-- "bonus": an integer from -5 to 5 for how this exact wording lands with this group beyond its style (a sharp, well-aimed line earns more, a line that misreads the group loses some). Most bonuses are -2..3.
-- "line": that group's reaction in its own voice, at most 14 words, funny and specific to the statement and the question. Match the sign of base+bonus: delighted if high, furious if low.
+Read the WHOLE statement as each group. For each group return:
+- "bonus": an integer from -5 to 5 for how the statement as a whole lands with this group beyond the base (coherence, a line that hits them perfectly, whiplash between tones, a clip that will haunt them). Most bonuses are -3..3.
+- "line": that group's reaction in its own voice, at most 14 words, funny and specific to something actually in the statement. Match the sign of base+bonus: delighted if high, furious if low.
 
-Also return 3 consequence "headlines", each at most 8 words, punchy satirical ticker style ("Boardroom offended", "Stock down 4%", "Washington is also looking for you"). The first is the biggest. They follow from what was said and how the groups took it. And "face": the figure's reaction.
+Also return 3 consequence "headlines", each at most 8 words, punchy satirical ticker style ("Boardroom offended", "Stock down 4%", "Washington is also looking for you"), the first the biggest, following from what was said. And "face": the figure's reaction.
 
 Rules: stay consistent with the scandal context; never invent new allegations or new facts about real people; never joke about anyone's private or romantic life, never sexual, never hateful. Headlines are jokes about coverage, not claims of fact.`;
 
@@ -50,24 +49,21 @@ export default async function handler(req, res) {
   }
 
   const body = typeof req.body === "string" ? safeJSON(req.body) : req.body || {};
-  const groups = (Array.isArray(body.groups) ? body.groups : []).slice(0, 6).map((g) => ({
+  const groups = (Array.isArray(body.groups) ? body.groups : []).slice(0, 12).map((g) => ({
     id: cut(g.id, 24),
     name: cut(g.name, 40),
     kind: cut(g.kind, 24),
     persona: cut(g.persona, 200),
     base: Math.max(-30, Math.min(30, Math.round(Number(g.base) || 0))),
   }));
-  const style = STYLES.includes(body.style) ? body.style : "neutral";
-  const statement = cut(body.statement, 240);
+  const statement = cut(body.statement, 1600);
   if (!groups.length || statement.length < 2) return res.status(400).json({ error: "Missing statement or groups" });
 
   const prompt = [
     `Figure: ${cut(body.subject, 60)} (${cut(body.role, 80)})`,
     `Scandal context: ${cut(body.context, 1400)}`,
-    `Reporter (${cut(body.asker, 80)}) asks: ${cut(body.question, 240)}`,
-    `Statement style: ${style}`,
-    `Statement: "${statement}"`,
-    `Audience groups (base points already given for this style):`,
+    `Full statement read to the press: "${statement}"`,
+    `Audience groups (base points already given):`,
     ...groups.map((g) => `- id ${g.id}: ${g.name} (${g.kind}), ${g.persona}. Base ${g.base >= 0 ? "+" : ""}${g.base}.`),
   ].join("\n");
 
@@ -114,7 +110,7 @@ async function health(res) {
         max_tokens: 2000,
         output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
         system: SYSTEM,
-        messages: [{ role: "user", content: 'Figure: a CEO\nScandal context: test\nReporter asks: Did you resign?\nStatement style: charismatic\nStatement: "Nobody pushes me."\nAudience groups:\n- id board: The Board (Governance), directors. Base -10.' }],
+        messages: [{ role: "user", content: 'Figure: a CEO\nScandal context: test\nFull statement read to the press: "Last week I walked out. I cannot detect spies, only frame drops."\nAudience groups:\n- id board: The Board (Governance), directors. Base -10.' }],
       },
       { timeout: 15000, maxRetries: 0 },
     );

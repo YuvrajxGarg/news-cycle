@@ -457,3 +457,26 @@ button { font: inherit; color: inherit; cursor: pointer; }
 }
 .aud-wants { margin: 0; font: 500 13px/1.35 var(--sans); color: var(--ink-2); }
 .opt { border-left-width: 2px; }
+
+/* ---------- v4: one statement with blanks ---------- */
+.release {
+  margin: 0; padding: 16px 18px; background: #fffdf6; border: 2px solid var(--ink); box-shadow: 6px 6px 0 var(--ink);
+  font: 500 17px/1.75 var(--sans); color: var(--ink);
+}
+.blank { cursor: pointer;
+  display: inline; font: inherit; font-weight: 700; line-height: inherit; text-align: left;
+  border: 0; border-bottom: 3px solid var(--ink); background: var(--paper-2); padding: 1px 4px; margin: 0 1px;
+  -webkit-box-decoration-break: clone; box-decoration-break: clone;
+}
+.blank i { font-style: normal; font-size: .7em; margin-left: 4px; color: var(--ink-3); }
+.blank .ph { display: inline-block; min-width: 70px; color: var(--ink-3); font: 700 12px var(--mono); }
+.blank.set { background: var(--yellow); }
+.blank.active { background: var(--ink); color: var(--paper); border-bottom-color: var(--red); }
+.blank.active .ph, .blank.active i { color: var(--yellow); }
+.blank:hover:not(.active) { background: #ffe08a; }
+.picker { display: grid; gap: 10px; border-top: 3px solid var(--ink); padding-top: 12px; }
+.pick-q { margin: 0; font: 800 16px/1.2 var(--display); letter-spacing: -0.02em; }
+.opt.chosen { background: var(--yellow); box-shadow: 4px 4px 0 var(--ink); }
+.quote.statement { font-size: 15px; line-height: 1.5; font-weight: 600; }
+.front { margin-bottom: 8px; }
+@media (max-width: 520px) { .release { font-size: 16px; padding: 12px 14px; } }

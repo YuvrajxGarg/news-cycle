@@ -8,7 +8,7 @@
   "setup": {
     "kicker": "Week one",
     "headline": "He's out. Or is he?",
-    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. Five real questions. Pick his answer."
+    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. He has one statement to read. You write it."
   },
   "context": "Real situation, mid-November 2026: Nov 8 the Nvidia board opened an independent investigation into reports Huang was the target of a foreign intelligence effort (a contact linked to Megaspeed, a Singapore firm that bought billions in Nvidia gear and is probed over export controls). The FBI is looking into it. Nov 12 he resigned as CEO and director; CFO Colette Kress became interim CEO and Harvey Jones the first board chair. Nvidia lost over $600B in market value that week. Nov 14 two major investors urged the board to consider his return. House committee chairs want him at a closed-door briefing on Nov 18; his trip to APEC in Shenzhen is in doubt. Keep everything non-sexual.",
   "character": {
@@ -265,184 +265,19 @@
       }
     }
   },
-  "rounds": [
-    {
-      "asker": "Reporter outside his house",
-      "outlet": "THE WIRE",
-      "question": "Did you resign, or were you pushed?",
-      "source": "The board accepted his resignation on Nov 12, hours after reports it was preparing to remove him.",
-      "groups": [
-        "board",
-        "wallst",
-        "press",
-        "staff"
-      ],
-      "options": [
-        {
-          "style": "neutral",
-          "text": "I've stepped down. I have nothing further to add."
-        },
-        {
-          "style": "diplomatic",
-          "text": "The board and I agreed it was the right call for Nvidia, and I respect it."
-        },
-        {
-          "style": "charismatic",
-          "text": "Pushed? Nobody pushes me. I walked out, and I took the jacket."
-        },
-        {
-          "style": "edgy",
-          "text": "At a $4 trillion company, resigned and pushed are the same verb."
-        },
-        {
-          "style": "unhinged",
-          "text": "I was not pushed. I was rendered. In 4K. With ray tracing."
-        }
-      ]
-    },
-    {
-      "asker": "White House press pool",
-      "outlet": "TICKR",
-      "question": "The President says you told him you had no idea your contact was an alleged spy. True?",
-      "source": "On Nov 9 the President said the FBI was looking into it and that Huang told him he had no idea.",
-      "groups": [
-        "washington",
-        "beijing",
-        "ethicists",
-        "internet"
-      ],
-      "options": [
-        {
-          "style": "neutral",
-          "text": "That's a matter for the investigation. I'm cooperating fully."
-        },
-        {
-          "style": "diplomatic",
-          "text": "I told the President the truth, and I'll tell investigators the same."
-        },
-        {
-          "style": "charismatic",
-          "text": "If I'd known, do you think I'd still be taking your calls?"
-        },
-        {
-          "style": "edgy",
-          "text": "In Silicon Valley everyone's a spy. We just call it networking."
-        },
-        {
-          "style": "unhinged",
-          "text": "I can't detect spies. I can only detect frame drops."
-        }
-      ]
-    },
-    {
-      "asker": "Capitol Hill reporter",
-      "outlet": "GLOBAL DESK",
-      "question": "Three House committee chairs want you at a closed-door briefing on Nov 18, or a subpoena. Will you go?",
-      "source": "Three House Republican committee chairs asked him to attend a closed-door briefing on Nov 18.",
-      "groups": [
-        "washington",
-        "press",
-        "internet",
-        "philosophers"
-      ],
-      "options": [
-        {
-          "style": "neutral",
-          "text": "My lawyers are reviewing the request."
-        },
-        {
-          "style": "diplomatic",
-          "text": "I'll be there on the 18th and answer every question I can."
-        },
-        {
-          "style": "charismatic",
-          "text": "Congress wants a briefing? I'll bring slides. They'll love the slides."
-        },
-        {
-          "style": "edgy",
-          "text": "Do they want a briefing, or to finally learn what a GPU is?"
-        },
-        {
-          "style": "unhinged",
-          "text": "I'll attend as a hologram, rendered live on 72 H200s."
-        }
-      ]
-    },
-    {
-      "asker": "Shareholder on the call",
-      "outlet": "LIVE",
-      "question": "Nvidia lost $600 billion in a week. What do you tell us?",
-      "source": "Nvidia lost more than $600 billion in market value in the week of Nov 9.",
-      "groups": [
-        "wallst",
-        "staff",
-        "gamers",
-        "press"
-      ],
-      "options": [
-        {
-          "style": "neutral",
-          "text": "Our fundamentals are unchanged. Demand remains strong."
-        },
-        {
-          "style": "diplomatic",
-          "text": "I'm sorry for the turbulence. The team that built this is still here."
-        },
-        {
-          "style": "charismatic",
-          "text": "We lost $600 billion in a week. We'll make it back by Christmas. Watch."
-        },
-        {
-          "style": "edgy",
-          "text": "Relax. It's only one Apple. We have more."
-        },
-        {
-          "style": "unhinged",
-          "text": "Think of it as a discount. Buy the dip. Buy my jacket. Buy everything."
-        }
-      ]
-    },
-    {
-      "asker": "Two major investors",
-      "outlet": "EXCLUSIVE",
-      "question": "We asked the board to consider your return. What is your pitch?",
-      "source": "On Nov 14 two major investors urged the board to consider the potential return of Jensen Huang.",
-      "groups": [
-        "board",
-        "wallst",
-        "philosophers",
-        "internet"
-      ],
-      "options": [
-        {
-          "style": "neutral",
-          "text": "That's the board's decision."
-        },
-        {
-          "style": "diplomatic",
-          "text": "I'd only come back if the board, the investigation and the staff all agree."
-        },
-        {
-          "style": "charismatic",
-          "text": "I started this company in a Denny's booth. Give me the keys and a booth."
-        },
-        {
-          "style": "edgy",
-          "text": "Take me back, or enjoy explaining CUDA to the next CEO."
-        },
-        {
-          "style": "unhinged",
-          "text": "Reinstate me and I will hand-deliver every GPU. By scooter."
-        }
-      ]
-    }
-  ],
   "faces": {
     "great": "triumphant",
     "good": "smug",
     "meh": "neutral",
     "bad": "nervous",
-    "awful": "shocked"
+    "awful": "shocked",
+    "byStyle": {
+      "neutral": "neutral",
+      "diplomatic": "smug",
+      "charismatic": "triumphant",
+      "edgy": "nervous",
+      "unhinged": "shocked"
+    }
   },
   "headlines": {
     "great": [
@@ -471,21 +306,21 @@
   },
   "endings": [
     {
-      "min": 320,
+      "min": 340,
       "kicker": "Final edition",
       "headline": "THE COMEBACK.",
       "dek": "The board takes him back. The jacket returns to the keynote.",
       "face": "triumphant"
     },
     {
-      "min": 220,
+      "min": 240,
       "kicker": "Final edition",
       "headline": "BACK BY CHRISTMAS?",
       "dek": "Investors are sold. The board wants one more week.",
       "face": "smug"
     },
     {
-      "min": 110,
+      "min": 120,
       "kicker": "Final edition",
       "headline": "FOUNDER EMERITUS.",
       "dek": "A nice title, a nice office, no keys.",
@@ -505,5 +340,215 @@
       "dek": "Legal has asked everyone to stop typing.",
       "face": "shocked"
     }
-  ]
+  ],
+  "statement": {
+    "title": "Statement of Jensen Huang",
+    "template": "Good afternoon. Last week I {0}. On the reports about my contact, {1}. As for the House committees asking me to brief them on November 18, {2}. To our shareholders, who watched $600 billion disappear in a week: {3}. To the investors asking the board to bring me back: {4}. And to Beijing and Washington, {5}. Thank you. I will not be taking questions.",
+    "blanks": [
+      {
+        "asker": "Reporter outside his house",
+        "outlet": "THE WIRE",
+        "question": "Did you resign, or were you pushed?",
+        "source": "The board accepted his resignation on Nov 12, hours after reports it was preparing to remove him.",
+        "groups": [
+          "board",
+          "wallst",
+          "press",
+          "staff"
+        ],
+        "options": [
+          {
+            "style": "neutral",
+            "text": "stepped down as CEO of Nvidia"
+          },
+          {
+            "style": "diplomatic",
+            "text": "agreed with the board that it was time for me to step aside"
+          },
+          {
+            "style": "charismatic",
+            "text": "walked out of the company I built, and I took the jacket with me"
+          },
+          {
+            "style": "edgy",
+            "text": "“resigned”, which at a $4 trillion company is the same verb as pushed"
+          },
+          {
+            "style": "unhinged",
+            "text": "was not pushed. I was rendered. In 4K. With ray tracing"
+          }
+        ]
+      },
+      {
+        "asker": "White House press pool",
+        "outlet": "TICKR",
+        "question": "The President says you told him you had no idea your contact was an alleged spy. True?",
+        "source": "On Nov 9 the President said the FBI was looking into it and that Huang told him he had no idea.",
+        "groups": [
+          "washington",
+          "beijing",
+          "ethicists",
+          "internet"
+        ],
+        "options": [
+          {
+            "style": "neutral",
+            "text": "that is a matter for the investigation, and I am cooperating fully"
+          },
+          {
+            "style": "diplomatic",
+            "text": "I told the President the truth, and I will tell investigators the same"
+          },
+          {
+            "style": "charismatic",
+            "text": "if I had known, do you think I would still be taking your calls"
+          },
+          {
+            "style": "edgy",
+            "text": "in Silicon Valley everyone is a spy; we just call it networking"
+          },
+          {
+            "style": "unhinged",
+            "text": "I cannot detect spies. I can only detect frame drops"
+          }
+        ]
+      },
+      {
+        "asker": "Capitol Hill reporter",
+        "outlet": "GLOBAL DESK",
+        "question": "Three House committee chairs want you at a closed-door briefing on Nov 18, or a subpoena. Will you go?",
+        "source": "Three House Republican committee chairs asked him to attend a closed-door briefing on Nov 18.",
+        "groups": [
+          "washington",
+          "press",
+          "internet",
+          "philosophers"
+        ],
+        "options": [
+          {
+            "style": "neutral",
+            "text": "my lawyers are reviewing the request"
+          },
+          {
+            "style": "diplomatic",
+            "text": "I will be there on the 18th and answer every question I can"
+          },
+          {
+            "style": "charismatic",
+            "text": "I will bring slides, and they will love the slides"
+          },
+          {
+            "style": "edgy",
+            "text": "I am happy to finally explain what a GPU is"
+          },
+          {
+            "style": "unhinged",
+            "text": "I will attend as a hologram, rendered live on 72 H200s"
+          }
+        ]
+      },
+      {
+        "asker": "Shareholder on the call",
+        "outlet": "LIVE",
+        "question": "Nvidia lost $600 billion in a week. What do you tell us?",
+        "source": "Nvidia lost more than $600 billion in market value in the week of Nov 9.",
+        "groups": [
+          "wallst",
+          "staff",
+          "gamers",
+          "press"
+        ],
+        "options": [
+          {
+            "style": "neutral",
+            "text": "our fundamentals are unchanged and demand remains strong"
+          },
+          {
+            "style": "diplomatic",
+            "text": "I am sorry, and the team that built this is still here"
+          },
+          {
+            "style": "charismatic",
+            "text": "we will make it back by Christmas. Watch"
+          },
+          {
+            "style": "edgy",
+            "text": "relax, it is only one Apple. We have more"
+          },
+          {
+            "style": "unhinged",
+            "text": "think of it as a discount. Buy the dip. Buy my jacket. Buy everything"
+          }
+        ]
+      },
+      {
+        "asker": "Two major investors",
+        "outlet": "EXCLUSIVE",
+        "question": "We asked the board to consider your return. What is your pitch?",
+        "source": "On Nov 14 two major investors urged the board to consider the potential return of Jensen Huang.",
+        "groups": [
+          "board",
+          "wallst",
+          "philosophers",
+          "internet"
+        ],
+        "options": [
+          {
+            "style": "neutral",
+            "text": "that is the board's decision"
+          },
+          {
+            "style": "diplomatic",
+            "text": "I would only return if the board, the investigation and our people all agree"
+          },
+          {
+            "style": "charismatic",
+            "text": "I started this company in a Denny's booth. Give me the keys and a booth"
+          },
+          {
+            "style": "edgy",
+            "text": "good luck explaining CUDA to the next CEO"
+          },
+          {
+            "style": "unhinged",
+            "text": "reinstate me and I will hand-deliver every GPU. By scooter"
+          }
+        ]
+      },
+      {
+        "asker": "APEC press pool",
+        "outlet": "NEWS9",
+        "question": "Your trip to APEC in Shenzhen is in doubt. What do you say to Beijing and Washington?",
+        "source": "Reports say his planned trip to APEC in Shenzhen is in doubt while export-control questions hang over Nvidia.",
+        "groups": [
+          "washington",
+          "beijing",
+          "wallst",
+          "gamers"
+        ],
+        "options": [
+          {
+            "style": "neutral",
+            "text": "we follow every export rule that applies to us"
+          },
+          {
+            "style": "diplomatic",
+            "text": "Nvidia will keep working with both of you, inside the rules"
+          },
+          {
+            "style": "charismatic",
+            "text": "you both need our chips, so let's all calm down"
+          },
+          {
+            "style": "edgy",
+            "text": "you both want our chips and neither of you will say it out loud"
+          },
+          {
+            "style": "unhinged",
+            "text": "I propose we settle this with a LAN party"
+          }
+        ]
+      }
+    ]
+  }
 }

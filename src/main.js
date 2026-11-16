@@ -11,10 +11,12 @@ const el = (tag, cls, html) => {
 const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 const sign = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
 
-const ROUNDS = 5;
-const PER_TASTE = 10; // each taste step is worth 10 points per audience
+// Each part of the statement is heard by a few audiences. Each audience has a hidden taste per
+// option style (-3..+3, dev-only); every taste point is worth PER_TASTE. The judges then read the
+// finished statement as a whole and add -5..+5 per audience.
+const PER_TASTE = 10;
 
-const state = { pack: null, round: 0, picks: [], started: false, busy: false, timer: null };
+const state = { pack: null, picks: [], active: 0, order: [], started: false, busy: false, result: null };
 let stage;
 
 async function boot() {
@@ -34,7 +36,6 @@ async function boot() {
   setupMute();
   stage = new Stage($("stage"));
   stage.loadCharacter(state.pack.character, () => $("loading")?.remove());
-  document.addEventListener("keydown", onKey);
   intro();
 }
 
@@ -55,22 +56,22 @@ function setupMute() {
   paint();
 }
 
-const total = () => state.picks.reduce((n, p) => n + p.points, 0);
+const blanks = () => state.pack.statement.blanks;
+const filled = () => state.picks.filter(Boolean).length;
 
 function renderScore() {
-  $("total").innerHTML = state.started ? `<span>${total()}</span><small>pts</small>` : "";
+  $("total").innerHTML = state.result ? `<span>${state.result.total}</span><small>pts</small>` : "";
 }
 
 function renderDots() {
   const d = $("dots");
   d.innerHTML = "";
-  for (let i = 0; i < ROUNDS; i++) {
+  blanks().forEach((_, i) => {
     const s = el("span", "", String(i + 1));
-    const p = state.picks[i];
-    if (p) s.className = p.points >= 40 ? "good" : p.points < 0 ? "bad" : "done";
-    else if (i === state.round && state.started) s.className = "on";
+    if (state.picks[i]) s.className = "done";
+    if (state.started && !state.result && i === state.active) s.className = "on";
     d.appendChild(s);
-  }
+  });
 }
 
 function setTicker(lines) {
@@ -105,65 +106,19 @@ function flash() {
   audio.sfx.shutter();
 }
 
-function showQuestion(r) {
+function showQuestion(b) {
   const q = $("qcard");
+  if (!b) {
+    q.hidden = true;
+    return;
+  }
   q.hidden = false;
   q.style.animation = "none";
   void q.offsetWidth;
   q.style.animation = "";
-  $("qOutlet").textContent = r.outlet;
-  $("qAsker").textContent = r.asker;
-  $("qText").textContent = r.question;
-}
-
-
-// One audience card: who they are and what they want. Style tastes stay hidden (dev-only categories).
-function groupCard(id) {
-  const g = state.pack.groups[id];
-  const card = el("div", "aud");
-  card.dataset.id = id;
-  card.innerHTML = `<div class="aud-top"><span class="aud-name">${esc(g.name)}</span><span class="aud-kind">${esc(g.kind)}</span></div><p class="aud-wants">${esc(g.wants || g.persona)}</p>`;
-  return card;
-}
-
-// ---------- screens ----------
-
-function stopTimer() {
-  state.timer = null;
-}
-
-function intro() {
-  stopTimer();
-  Object.assign(state, { round: 0, picks: [], started: false, busy: false });
-  renderDots();
-  renderScore();
-  setTicker([]);
-  $("qcard").hidden = true;
-  clearStamps();
-  stage?.setFace("neutral", { flash: false });
-  audio.music(0.16);
-
-  const s = state.pack.setup;
-  const p = $("panel");
-  p.innerHTML = "";
-  const rules = el("div", "rules");
-  rules.innerHTML = `
-    <div class="label">How you score</div>
-    <ol>
-      <li><b>A real reporter asks a real question.</b> Pick one of five answers for him.</li>
-      <li><b>Four audiences are listening.</b> Each card says what they want. Each audience gives your answer from <b>−30</b> to <b>+30</b>, depending on how well its tone suits them.</li>
-      <li><b>The exact line matters.</b> The judges read your exact answer as each audience and add up to <b>±5</b> each for how it lands.</li>
-    </ol>`;
-  const go = el("button", "btn", "Start the cycle →");
-  go.onclick = () => {
-    audio.start();
-    audio.sfx.select();
-    state.started = true;
-    question();
-  };
-  const row = el("div", "row");
-  row.append(go);
-  p.append(el("span", "kicker", esc(s.kicker)), el("h1", "headline", esc(s.headline)), el("p", "dek", esc(s.dek)), rules, row);
+  $("qOutlet").textContent = b.outlet;
+  $("qAsker").textContent = b.asker;
+  $("qText").textContent = b.question;
 }
 
 function shuffle(a) {
@@ -175,55 +130,168 @@ function shuffle(a) {
   return b;
 }
 
-function question() {
-  const r = state.pack.rounds[state.round];
-  state.busy = false;
+// ---------- screens ----------
+
+function intro() {
+  Object.assign(state, { picks: [], active: 0, started: false, busy: false, result: null });
+  state.order = blanks().map((b) => shuffle(b.options));
   renderDots();
   renderScore();
+  setTicker([]);
+  showQuestion(null);
   clearStamps();
-  stage.setFace("neutral", { flash: false });
-  showQuestion(r);
-  audio.music(0.07);
+  stage?.setFace("neutral", { flash: false });
+  audio.music(0.16);
 
+  const s = state.pack.setup;
   const p = $("panel");
   p.innerHTML = "";
-  p.append(el("div", "label", `Round ${state.round + 1} of ${ROUNDS} · Pick his answer`));
-  if (r.source) p.append(el("p", "fine src", `<b>Real story:</b> ${esc(r.source)}`));
-
-
-  p.append(el("div", "sub", "Who's listening"));
-  const auds = el("div", "auds");
-  r.groups.forEach((id) => auds.appendChild(groupCard(id)));
-  p.append(auds);
-
-  p.append(el("div", "sub", "His answer"));
-  const opts = el("div", "options");
-  shuffle(r.options).forEach((o, i) => {
-    const b = el("button", "opt");
-    b.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body"><span class="opt-text">${esc(o.text)}</span></span>`;
-    b.onclick = () => answer(r, o, false);
-    opts.appendChild(b);
-  });
-  p.append(opts);
-
-  state.timer = { live: true };
+  const rules = el("div", "rules");
+  rules.innerHTML = `
+    <div class="label">How it works</div>
+    <ol>
+      <li><b>He has one statement to read.</b> It has ${blanks().length} blanks. Fill each one from the dropdown.</li>
+      <li><b>Every blank answers a real question</b> from this week's news, and a different set of audiences is listening to each part.</li>
+      <li><b>Read the room.</b> Each audience says what it wants. The same line can win Wall Street and lose Washington.</li>
+      <li><b>The judges read the whole statement</b> as each audience, then the front page decides his fate.</li>
+    </ol>`;
+  const go = el("button", "btn", "Write his statement →");
+  go.onclick = () => {
+    audio.start();
+    audio.sfx.select();
+    state.started = true;
+    editor();
+  };
+  const row = el("div", "row");
+  row.append(go);
+  p.append(el("span", "kicker", esc(s.kicker)), el("h1", "headline", esc(s.headline)), el("p", "dek", esc(s.dek)), rules, row);
 }
 
-function onKey(e) {
-  if (!state.timer || state.busy) return;
-  const n = Number(e.key);
-  if (n >= 1 && n <= 5) {
-    const b = $("panel").querySelectorAll(".opt")[n - 1];
-    if (b) b.click();
+// The statement with blanks, plus the picker for the active blank.
+function editor() {
+  state.busy = false;
+  state.result = null;
+  clearStamps();
+  renderDots();
+  renderScore();
+  audio.music(0.1);
+  const st = state.pack.statement;
+  const p = $("panel");
+  p.innerHTML = "";
+  p.append(el("div", "label", `${esc(st.title)} · Draft`));
+
+  const doc = el("div", "release");
+  st.template.split(/\{(\d+)\}/).forEach((part, i) => {
+    if (i % 2 === 0) {
+      if (part) doc.append(document.createTextNode(part));
+      return;
+    }
+    const n = Number(part);
+    const pick = state.picks[n];
+    // a span, not a button, so long picks wrap inline with the sentence
+    const b = el("span", `blank${pick ? " set" : ""}${n === state.active ? " active" : ""}`);
+    b.setAttribute("role", "button");
+    b.tabIndex = 0;
+    b.onkeydown = (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        b.click();
+      }
+    };
+    b.innerHTML = pick ? `${esc(pick.text)}<i>▾</i>` : `<span class="ph">${n + 1}</span><i>▾</i>`;
+    b.setAttribute("aria-label", `Blank ${n + 1}${pick ? `: ${pick.text}` : ", empty"}`);
+    b.onclick = () => {
+      audio.sfx.tick(false);
+      state.active = n;
+      editor();
+      $("panel").querySelector(".picker")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    };
+    doc.append(b);
+  });
+  p.append(doc);
+
+  const row = el("div", "write-row");
+  row.append(el("span", "count", `${filled()} of ${blanks().length} filled`));
+  const send = el("button", "btn", "Release statement →");
+  send.disabled = filled() < blanks().length;
+  send.onclick = release;
+  row.append(send);
+
+  p.append(picker(state.active));
+  p.append(row);
+  showQuestion(blanks()[state.active]);
+}
+
+function picker(n) {
+  const b = blanks()[n];
+  const pack = state.pack;
+  const box = el("div", "picker");
+  box.append(el("div", "sub", `Blank ${n + 1} answers`));
+  box.append(el("p", "pick-q", `“${esc(b.question)}”`));
+  if (b.source) box.append(el("p", "fine src", `<b>Real story:</b> ${esc(b.source)}`));
+  box.append(el("div", "sub", "Listening to this part"));
+  const auds = el("div", "auds");
+  b.groups.forEach((id) => {
+    const g = pack.groups[id];
+    auds.append(el("div", "aud", `<div class="aud-top"><span class="aud-name">${esc(g.name)}</span><span class="aud-kind">${esc(g.kind)}</span></div><p class="aud-wants">${esc(g.wants || g.persona)}</p>`));
+  });
+  box.append(auds);
+  box.append(el("div", "sub", `Fill blank ${n + 1}`));
+  const opts = el("div", "options");
+  state.order[n].forEach((o, i) => {
+    const btn = el("button", `opt${state.picks[n]?.text === o.text ? " chosen" : ""}`);
+    btn.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body"><span class="opt-text">…${esc(o.text)}</span></span>`;
+    btn.onclick = () => choose(n, o);
+    opts.append(btn);
+  });
+  box.append(opts);
+  return box;
+}
+
+function choose(n, o) {
+  audio.sfx.select();
+  state.picks[n] = o;
+  stage.setFace(state.pack.faces.byStyle?.[o.style] || "neutral");
+  // move on to the next empty blank, if any
+  const next = blanks().findIndex((_, i) => !state.picks[i]);
+  if (next >= 0) state.active = next;
+  editor();
+  if (next < 0) {
+    toast("Statement ready. Release it.");
+    $("panel").querySelector(".write-row .btn")?.scrollIntoView({ block: "nearest", behavior: "smooth" });
+  } else if (window.innerWidth <= 860) {
+    $("panel").querySelector(".release")?.scrollIntoView({ block: "start", behavior: "smooth" });
   }
 }
 
-// The judges (Claude, server side) read the line as each audience. If it isn't set up or is slow, use the pack's lines.
-async function react(r, opt, base) {
+function fullText() {
+  return state.pack.statement.template.replace(/\{(\d+)\}/g, (_, n) => state.picks[Number(n)]?.text || "___");
+}
+
+// Base points per audience: its taste for every part it was listening to.
+function baseScores() {
+  const pack = state.pack;
+  const ids = [...new Set(blanks().flatMap((b) => b.groups))];
+  return ids.map((id) => {
+    const g = pack.groups[id];
+    let base = 0;
+    let heard = 0;
+    blanks().forEach((b, i) => {
+      if (!b.groups.includes(id)) return;
+      heard++;
+      base += (g.taste[state.picks[i].style] || 0) * PER_TASTE;
+    });
+    return { id, name: g.name, kind: g.kind, base, heard };
+  });
+}
+
+// The judges (Claude, server side) read the whole statement as each audience.
+// If they are not set up or are slow, use the pack's canned lines.
+async function react(base) {
   const pack = state.pack;
   try {
     const ctrl = new AbortController();
-    const timer = setTimeout(() => ctrl.abort(), 12000);
+    const timer = setTimeout(() => ctrl.abort(), 20000);
     const res = await fetch("api/react", {
       method: "POST",
       headers: { "content-type": "application/json" },
@@ -231,10 +299,7 @@ async function react(r, opt, base) {
         subject: pack.subject,
         role: pack.role,
         context: pack.context,
-        asker: `${r.asker}, ${r.outlet}`,
-        question: r.question,
-        style: opt.style,
-        statement: opt.text,
+        statement: fullText(),
         groups: base.map((b) => ({ id: b.id, name: b.name, kind: b.kind, persona: pack.groups[b.id].persona, base: b.base })),
       }),
       signal: ctrl.signal,
@@ -243,42 +308,37 @@ async function react(r, opt, base) {
     if (res.ok) {
       const j = await res.json();
       if (j.groups?.length) return j;
-    }
-  } catch {
-    /* fall through to the pack's own lines */
+    } else console.warn("judges:", res.status, await res.text().catch(() => ""));
+  } catch (e) {
+    console.warn("judges:", e?.message || e);
   }
   return {
     judge: "local",
     groups: base.map((b) => {
-      const t = pack.groups[b.id].taste[opt.style] || 0;
+      const avg = b.base / PER_TASTE / Math.max(1, b.heard);
       const lines = pack.groups[b.id].lines;
-      return { id: b.id, bonus: 0, line: t >= 3 ? lines.love : t >= 1 ? lines.like : t === 0 ? lines.meh : lines.hate };
+      return { id: b.id, bonus: 0, line: avg >= 2 ? lines.love : avg >= 0.75 ? lines.like : avg > -0.75 ? lines.meh : lines.hate };
     }),
   };
 }
 
 function tierOf(n) {
-  return n >= 60 ? "great" : n >= 30 ? "good" : n >= 0 ? "meh" : n >= -30 ? "bad" : "awful";
+  return n >= 240 ? "great" : n >= 120 ? "good" : n >= 0 ? "meh" : n >= -120 ? "bad" : "awful";
 }
 
-async function answer(r, opt, timedOut) {
-  if (state.busy) return;
+async function release() {
+  if (state.busy || filled() < blanks().length) return;
   state.busy = true;
-  stopTimer();
-  const speed = 0;
-  if (!timedOut) audio.sfx.select();
+  audio.sfx.select();
   audio.music(0.12);
-
+  showQuestion(null);
   const pack = state.pack;
-  const base = r.groups.map((id) => {
-    const g = pack.groups[id];
-    return { id, name: g.name, kind: g.kind, base: (g.taste[opt.style] || 0) * PER_TASTE };
-  });
+  const base = baseScores();
 
   const p = $("panel");
   p.innerHTML = "";
-  p.append(el("div", "label", `Round ${state.round + 1} · ${timedOut ? "Out of time" : "Going to print"}`));
-  p.append(el("p", "quote", `“${esc(opt.text)}”`));
+  p.append(el("div", "label", "Going to print"));
+  p.append(el("p", "quote statement", `“${esc(fullText())}”`));
 
   const table = el("div", "board");
   base.forEach((b) => {
@@ -288,118 +348,85 @@ async function answer(r, opt, timedOut) {
     table.appendChild(row);
   });
   const tot = el("div", "brow total-row");
-  tot.innerHTML = `<div class="brow-top"><span class="brow-name">Round total</span><b class="round-total">…</b></div>`;
+  tot.innerHTML = `<div class="brow-top"><span class="brow-name">Total</span><b class="round-total">…</b></div>`;
   table.appendChild(tot);
+  p.append(el("div", "sub", "The judges, as each audience"));
   p.append(table);
   stage.setFace("nervous", { flash: false });
 
-  const v = await react(r, opt, base);
+  const v = await react(base);
   const byId = new Map(v.groups.map((g) => [g.id, g]));
-  let sum = speed;
+  let sum = 0;
   base.forEach((b, i) => {
     const g = byId.get(b.id) || { bonus: 0, line: "" };
     sum += b.base + g.bonus;
     const row = table.querySelector(`.brow[data-id="${b.id}"]`);
     const bo = row.querySelector(".bonus");
     bo.classList.remove("wait");
-    bo.textContent = v.judge === "claude" ? `${sign(g.bonus)} line` : "";
+    bo.textContent = v.judge === "claude" ? `${sign(g.bonus)} judges` : "";
     bo.classList.toggle("pos", g.bonus > 0);
     bo.classList.toggle("neg", g.bonus < 0);
     row.querySelector(".brow-line").innerHTML = `“${esc(g.line)}”`;
-    row.style.animationDelay = `${i * 0.08}s`;
+    row.style.animationDelay = `${i * 0.06}s`;
     row.classList.add(b.base + g.bonus > 0 ? "up" : b.base + g.bonus < 0 ? "down" : "flat");
   });
-  const tier = tierOf(sum - speed);
+  const tier = tierOf(sum);
   const headlines = v.headlines?.length ? v.headlines : pack.headlines[tier];
-  const rec = { style: opt.style, text: opt.text, points: sum, tier, headlines, timedOut };
-  state.picks[state.round] = rec;
-
-  flash();
-  stage.setFace(v.face || pack.faces[tier] || "neutral");
-  $("stamps").innerHTML = "";
-  stamp(headlines[0], sum >= 30 ? "green" : sum < 0 ? "red" : "ink", { left: "5%", bottom: "17%", r: "-6deg" }, 0.15);
-  if (headlines[1]) stamp(headlines[1], "ink small", { right: "5%", bottom: "8%", r: "3deg" }, 0.55);
-  setTimeout(() => (sum >= 30 ? audio.sfx.good() : sum < 0 ? audio.sfx.bad() : null), 700);
-  renderDots();
-  renderScore();
-  setTicker(state.picks.flatMap((x) => x.headlines));
+  const end = pack.endings.find((e) => sum >= e.min) || pack.endings[pack.endings.length - 1];
+  const rank = pack.endings.indexOf(end);
+  state.result = { total: sum, headlines, end };
 
   const rt = tot.querySelector(".round-total");
-  rt.className = `round-total ${sum >= 30 ? "pos" : sum < 0 ? "neg" : ""}`;
+  rt.className = `round-total ${sum > 0 ? "pos" : sum < 0 ? "neg" : ""}`;
   countUp(rt, sum);
-  if (v.judge !== "claude") p.append(el("p", "fine", "Judges are offline right now; scored on tone only."));
+  if (v.judge !== "claude") p.append(el("p", "fine", "Judges are offline right now; scored on the audiences' tastes only."));
 
-  const last = state.round === ROUNDS - 1;
-  const next = el("button", "btn", last ? "Print the front page →" : "Next question →");
-  next.onclick = () => {
-    audio.sfx.select();
-    state.round++;
-    if (last) frontPage();
-    else question();
-  };
+  flash();
+  stage.setFace(end.face || v.face || pack.faces[tier] || "neutral");
+  $("stamps").innerHTML = "";
+  stamp(end.headline, rank <= 1 ? "green" : "red", { left: "5%", bottom: "17%", r: "-6deg" }, 0.2);
+  if (headlines[0]) stamp(headlines[0], "ink small", { right: "5%", bottom: "8%", r: "3deg" }, 0.6);
+  setTimeout(() => (rank <= 1 ? audio.sfx.fanfare() : sum < 0 ? audio.sfx.bad() : audio.sfx.good()), 700);
+  renderDots();
+  renderScore();
+  setTicker([end.headline, ...headlines]);
+
+  const front = el("div", "front");
+  front.append(el("span", "kicker", esc(end.kicker)), el("h1", "headline", esc(end.headline)), el("p", "dek", `${esc(end.dek)} <b class="sum">${sum} pts</b>`));
+  const ul = el("ul", "heads");
+  headlines.forEach((h) => ul.appendChild(el("li", "", esc(h))));
+  front.append(ul);
   const row = el("div", "row");
-  row.append(next);
-  p.append(row);
-  setTimeout(() => next.focus({ preventScroll: true }), 50);
+  const share = el("button", "btn", "Copy result");
+  share.onclick = () => copyResult(end, sum, headlines);
+  const edit = el("button", "btn ghost", "Rewrite it");
+  edit.onclick = () => {
+    audio.sfx.select();
+    state.active = 0;
+    editor();
+  };
+  const again = el("button", "btn ghost", "Start over");
+  again.onclick = intro;
+  row.append(share, edit, again);
+  front.append(row);
+  p.prepend(front);
 }
 
 function countUp(node, to) {
   const t0 = performance.now();
   const step = (t) => {
-    const k = Math.min(1, (t - t0) / 700);
+    const k = Math.min(1, (t - t0) / 900);
     node.textContent = sign(Math.round(to * (1 - Math.pow(1 - k, 3))));
     if (k < 1) requestAnimationFrame(step);
   };
   requestAnimationFrame(step);
 }
 
-function frontPage() {
-  const sum = total();
-  const end = state.pack.endings.find((e) => sum >= e.min) || state.pack.endings[state.pack.endings.length - 1];
-  const rank = state.pack.endings.indexOf(end);
-  $("qcard").hidden = true;
-  flash();
-  stage.setFace(end.face || "neutral");
-  $("stamps").innerHTML = "";
-  stamp(end.headline, rank <= 1 ? "green" : "red", { left: "5%", bottom: "14%", r: "-5deg" });
-  setTimeout(() => (rank <= 1 ? audio.sfx.fanfare() : audio.sfx.bad()), 400);
-  audio.music(0.16);
-  renderDots();
-  renderScore();
-
-  const p = $("panel");
-  p.innerHTML = "";
-  const front = el("div", "front");
-  front.append(
-    el("span", "kicker", esc(end.kicker)),
-    el("h1", "headline", esc(end.headline)),
-    el("p", "dek", `${esc(end.dek)} <b class="sum">${sum} pts</b>`),
-  );
-  front.append(el("div", "label", "The week in statements"));
-  const recap = el("div", "recap");
-  state.picks.forEach((x) => {
-    const row = el("div", "recap-row");
-    row.innerHTML = `<span class="recap-n">${sign(x.points)}</span><div><div class="recap-h">${esc(x.headlines[0])}</div><div class="recap-q">“${esc(x.text)}”</div></div>`;
-    recap.appendChild(row);
-  });
-  front.append(recap);
-
-  const row = el("div", "row");
-  const share = el("button", "btn", "Copy result");
-  share.onclick = () => copyResult(end, sum);
-  const again = el("button", "btn ghost", "Run it again");
-  again.onclick = intro;
-  row.append(share, again);
-  front.append(row);
-  p.append(front);
-  setTicker([end.headline, ...state.picks.flatMap((x) => x.headlines)]);
-}
-
-function copyResult(end, sum) {
+function copyResult(end, sum, headlines) {
   const lines = [
     `PRESS CYCLE · ${state.pack.title}`,
     `${end.headline} ${sum} pts`,
-    ...state.picks.map((x, i) => `${i + 1} ${x.points >= 40 ? "📈" : x.points < 0 ? "📉" : "➖"} ${x.headlines[0]}`),
+    ...headlines.map((h) => `■ ${h}`),
     location.origin + location.pathname,
   ];
   const text = lines.join("\n");
