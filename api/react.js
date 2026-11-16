@@ -106,19 +106,24 @@ export default async function handler(req, res) {
 // GET /api/react?health=1: one tiny judge call, reports whether the judges work (no secrets returned).
 async function health(res) {
   if (!process.env.ANTHROPIC_API_KEY) return res.status(200).json({ ok: false, reason: "no ANTHROPIC_API_KEY in this deployment" });
+  const t0 = Date.now();
   try {
     const msg = await new Anthropic().messages.create(
       {
         model: MODEL,
-        max_tokens: 200,
-        output_config: { effort: "low", format: { type: "json_schema", schema: { type: "object", properties: { ok: { type: "boolean" } }, required: ["ok"], additionalProperties: false } } },
-        messages: [{ role: "user", content: "Reply ok true." }],
+        max_tokens: 2000,
+        output_config: { effort: "low", format: { type: "json_schema", schema: SCHEMA } },
+        system: SYSTEM,
+        messages: [{ role: "user", content: 'Figure: a CEO\nScandal context: test\nReporter asks: Did you resign?\nStatement style: charismatic\nStatement: "Nobody pushes me."\nAudience groups:\n- id board: The Board (Governance), directors. Base -10.' }],
       },
       { timeout: 15000, maxRetries: 0 },
     );
-    return res.status(200).json({ ok: true, model: MODEL, stop: msg.stop_reason });
+    const text = msg.content.find((b) => b.type === "text")?.text || "";
+    let parsed = true;
+    try { JSON.parse(text); } catch { parsed = false; }
+    return res.status(200).json({ ok: parsed, model: MODEL, ms: Date.now() - t0, stop: msg.stop_reason, parsed });
   } catch (err) {
-    return res.status(200).json({ ok: false, model: MODEL, status: err?.status ?? null, error: String(err?.message || err).slice(0, 300) });
+    return res.status(200).json({ ok: false, model: MODEL, ms: Date.now() - t0, status: err?.status ?? null, error: String(err?.message || err).slice(0, 300) });
   }
 }
 
