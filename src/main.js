@@ -150,9 +150,9 @@ function intro() {
   rules.innerHTML = `
     <div class="label">How it works</div>
     <ol>
-      <li><b>He has one statement to read.</b> It has ${blanks().length} blanks. Fill each one from the dropdown.</li>
-      <li><b>Every blank answers a real question</b> from this week's news, and a different set of audiences is listening to each part.</li>
-      <li><b>Read the room.</b> Each audience says what it wants. The same line can win Wall Street and lose Washington.</li>
+      <li><b>He has one statement to read.</b> It has ${blanks().length} blanks.</li>
+      <li><b>Fill each blank.</b> Pick a line from the list, or write your own.</li>
+      <li><b>Read the room.</b> Wall Street, Washington, Beijing, the board, the internet and more are all listening. The same line can win one and lose another.</li>
       <li><b>The judges read the whole statement</b> as each audience, then the front page decides his fate.</li>
     </ol>`;
   const go = el("button", "btn", "Write his statement →");
@@ -179,6 +179,7 @@ function editor() {
   const p = $("panel");
   p.innerHTML = "";
   p.append(el("div", "label", `${esc(st.title)} · Draft`));
+  if (st.note) p.append(el("p", "fine", esc(st.note)));
 
   const doc = el("div", "release");
   st.template.split(/\{(\d+)\}/).forEach((part, i) => {
@@ -219,39 +220,46 @@ function editor() {
 
   p.append(picker(state.active));
   p.append(row);
-  showQuestion(blanks()[state.active]);
+  showQuestion(null);
 }
 
 function picker(n) {
   const b = blanks()[n];
-  const pack = state.pack;
   const box = el("div", "picker");
-  box.append(el("div", "sub", `Blank ${n + 1} answers`));
-  box.append(el("p", "pick-q", `“${esc(b.question)}”`));
-  if (b.source) box.append(el("p", "fine src", `<b>Real story:</b> ${esc(b.source)}`));
-  box.append(el("div", "sub", "Listening to this part"));
-  const auds = el("div", "auds");
-  b.groups.forEach((id) => {
-    const g = pack.groups[id];
-    auds.append(el("div", "aud", `<div class="aud-top"><span class="aud-name">${esc(g.name)}</span><span class="aud-kind">${esc(g.kind)}</span></div><p class="aud-wants">${esc(g.wants || g.persona)}</p>`));
-  });
-  box.append(auds);
-  box.append(el("div", "sub", `Fill blank ${n + 1}`));
+  box.append(el("div", "sub", `Blank ${n + 1}`));
   const opts = el("div", "options");
   state.order[n].forEach((o, i) => {
     const btn = el("button", `opt${state.picks[n]?.text === o.text ? " chosen" : ""}`);
-    btn.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body"><span class="opt-text">…${esc(o.text)}</span></span>`;
+    btn.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body"><span class="opt-text">${esc(o.text)}</span></span>`;
     btn.onclick = () => choose(n, o);
     opts.append(btn);
   });
   box.append(opts);
+
+  // or write your own
+  const own = el("form", "own");
+  const typed = state.picks[n]?.typed ? state.picks[n].text : "";
+  own.innerHTML = `<label class="sub" for="own-${n}">Or write your own</label><div class="own-row"><input id="own-${n}" maxlength="${MAX_OWN}" autocomplete="off" placeholder="${esc(b.hint || "Type anything")}" value="${esc(typed)}" /><button class="btn" type="submit">Use it</button></div>`;
+  own.onsubmit = (e) => {
+    e.preventDefault();
+    const v = clean(own.querySelector("input").value);
+    if (v.length < 2) return;
+    choose(n, { style: null, text: v, typed: true });
+  };
+  box.append(own);
   return box;
+}
+
+const MAX_OWN = 90;
+// tidy a typed fill-in so it sits inside the sentence
+function clean(v) {
+  return String(v).replace(/\s+/g, " ").trim().replace(/^["“”']+|["“”']+$/g, "").replace(/[.\s]+$/, "").slice(0, MAX_OWN);
 }
 
 function choose(n, o) {
   audio.sfx.select();
   state.picks[n] = o;
-  stage.setFace(state.pack.faces.byStyle?.[o.style] || "neutral");
+  stage.setFace(o.typed ? "nervous" : state.pack.faces.byStyle?.[o.style] || "neutral");
   // move on to the next empty blank, if any
   const next = blanks().findIndex((_, i) => !state.picks[i]);
   if (next >= 0) state.active = next;
@@ -265,11 +273,13 @@ function choose(n, o) {
 }
 
 function fullText() {
-  return state.pack.statement.template.replace(/\{(\d+)\}/g, (_, n) => state.picks[Number(n)]?.text || "___");
+  return state.pack.statement.template
+    .replace(/\{(\d+)\}/g, (_, n) => state.picks[Number(n)]?.text || "___")
+    .replace(/([?!])\./g, "$1");
 }
 
 // Base points per audience: its taste for every part it was listening to.
-function baseScores() {
+function baseScores(ratings = {}) {
   const pack = state.pack;
   const ids = [...new Set(blanks().flatMap((b) => b.groups))];
   return ids.map((id) => {
@@ -279,7 +289,9 @@ function baseScores() {
     blanks().forEach((b, i) => {
       if (!b.groups.includes(id)) return;
       heard++;
-      base += (g.taste[state.picks[i].style] || 0) * PER_TASTE;
+      const pick = state.picks[i];
+      const t = pick.typed ? ratings[i]?.[id] ?? 0 : g.taste[pick.style] || 0;
+      base += t * PER_TASTE;
     });
     return { id, name: g.name, kind: g.kind, base, heard };
   });
@@ -300,6 +312,9 @@ async function react(base) {
         role: pack.role,
         context: pack.context,
         statement: fullText(),
+        typed: blanks()
+          .map((b, i) => (state.picks[i]?.typed ? { blank: i, text: state.picks[i].text, before: before(i), groups: b.groups } : null))
+          .filter(Boolean),
         groups: base.map((b) => ({ id: b.id, name: b.name, kind: b.kind, persona: pack.groups[b.id].persona, base: b.base })),
       }),
       signal: ctrl.signal,
@@ -322,6 +337,13 @@ async function react(base) {
   };
 }
 
+// the template text leading into blank i, for context
+function before(i) {
+  const t = state.pack.statement.template;
+  const at = t.indexOf(`{${i}}`);
+  return t.slice(Math.max(0, at - 120), at).replace(/\{\d+\}/g, "…");
+}
+
 function tierOf(n) {
   return n >= 240 ? "great" : n >= 120 ? "good" : n >= 0 ? "meh" : n >= -120 ? "bad" : "awful";
 }
@@ -333,7 +355,8 @@ async function release() {
   audio.music(0.12);
   showQuestion(null);
   const pack = state.pack;
-  const base = baseScores();
+  let base = baseScores();
+  const typedHeard = (id) => blanks().some((b, i) => state.picks[i].typed && b.groups.includes(id));
 
   const p = $("panel");
   p.innerHTML = "";
@@ -344,7 +367,7 @@ async function release() {
   base.forEach((b) => {
     const row = el("div", "brow");
     row.dataset.id = b.id;
-    row.innerHTML = `<div class="brow-top"><span class="brow-name">${esc(b.name)} <small>${esc(b.kind)}</small></span><span class="pts ${b.base > 0 ? "pos" : b.base < 0 ? "neg" : ""}">${sign(b.base)}</span><span class="bonus wait">…</span></div><div class="brow-line"><span class="dots3"><i></i><i></i><i></i></span></div>`;
+    row.innerHTML = `<div class="brow-top"><span class="brow-name">${esc(b.name)} <small>${esc(b.kind)}</small></span><span class="pts ${typedHeard(b.id) ? "" : b.base > 0 ? "pos" : b.base < 0 ? "neg" : ""}">${typedHeard(b.id) ? "…" : sign(b.base)}</span><span class="bonus wait">…</span></div><div class="brow-line"><span class="dots3"><i></i><i></i><i></i></span></div>`;
     table.appendChild(row);
   });
   const tot = el("div", "brow total-row");
@@ -355,12 +378,21 @@ async function release() {
   stage.setFace("nervous", { flash: false });
 
   const v = await react(base);
+  // the judges rated each typed fill-in for every audience that heard it
+  const ratings = {};
+  (v.typed || []).forEach((t) => {
+    ratings[t.blank] = Object.fromEntries((t.ratings || []).map((r) => [r.id, Math.max(-3, Math.min(3, Math.round(Number(r.rating) || 0)))]));
+  });
+  base = baseScores(ratings);
   const byId = new Map(v.groups.map((g) => [g.id, g]));
   let sum = 0;
   base.forEach((b, i) => {
     const g = byId.get(b.id) || { bonus: 0, line: "" };
     sum += b.base + g.bonus;
     const row = table.querySelector(`.brow[data-id="${b.id}"]`);
+    const pt = row.querySelector(".pts");
+    pt.textContent = sign(b.base);
+    pt.className = `pts ${b.base > 0 ? "pos" : b.base < 0 ? "neg" : ""}`;
     const bo = row.querySelector(".bonus");
     bo.classList.remove("wait");
     bo.textContent = v.judge === "claude" ? `${sign(g.bonus)} judges` : "";

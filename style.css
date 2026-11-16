@@ -480,3 +480,17 @@ button { font: inherit; color: inherit; cursor: pointer; }
 .quote.statement { font-size: 15px; line-height: 1.5; font-weight: 600; }
 .front { margin-bottom: 8px; }
 @media (max-width: 520px) { .release { font-size: 16px; padding: 12px 14px; } }
+.own { display: grid; gap: 6px; margin-top: 4px; }
+.own-row { display: flex; gap: 8px; }
+.own input {
+  flex: 1; min-width: 0; font: 600 15px var(--sans); color: var(--ink); background: #fffdf6;
+  border: 2px solid var(--ink); padding: 10px 12px; outline: none;
+}
+.own input:focus { box-shadow: 4px 4px 0 var(--yellow); }
+.own .btn { padding: 10px 16px; }
+.release, .quote.statement { white-space: pre-line; }
+@media (max-width: 520px) {
+  .dots span { width: 11px; height: 11px; font-size: 0; }
+  .dots { gap: 3px; }
+}
+@media (max-width: 420px) { .total { font-size: 15px; } .mast-right { gap: 4px; } }

@@ -2,7 +2,7 @@
 
 Parody "write the scandal statement" game. Read `README.md`.
 
-Mechanic (Yuvraj, 2026-11-16): ONE press statement with blanks; each blank answers a real question and is filled from a dropdown of 5 mixed fragments; no free typing, no timer. The finished statement is judged. Style categories are dev-only (never show labels, colors or taste numbers); audience cards show a plain "wants" line. Player copy says "the judges", never Claude.
+Mechanic (Yuvraj, 2026-11-16): his REAL statement, verbatim and complete (Yuvraj: don't remove anything), with blanks at flip points; each blank is filled from 5 mixed options or typed freely; no questions, no timer. Blanks stay out of the family paragraphs; options never sexual; the judges rate typed fill-ins and penalise sexual/defamatory ones ("pulled by legal"). The finished statement is judged. Style categories are dev-only (never show labels, colors or taste numbers); audience cards show a plain "wants" line. Player copy says "the judges", never Claude.
 
 - Plain ES modules + three.js (CDN importmap), no build step. One serverless function, `api/react.js` (Claude audience reactions, needs `ANTHROPIC_API_KEY`); the page must keep working without it.
 - Content is data: one JSON pack per scandal in `packs/`. Keep the game engine subject-agnostic.

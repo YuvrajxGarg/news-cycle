@@ -1,8 +1,8 @@
 # Press Cycle
 
-A parody news game built on a real, unfolding news story. The figure has one press statement to read, with
-blanks. Each blank answers a real question from this week's news; the player fills it from a dropdown of five
-fragments (mixed tones, shuffled). Then the statement is released and judged.
+A parody news game built on a real, unfolding news story. The figure's real statement, word for word, has
+blanks at the points where it can flip. The player fills each from five options (mixed tones, shuffled) or
+types their own; the judges rate typed fill-ins per audience. Then the statement is released and judged.
 
 ## Scoring
 
