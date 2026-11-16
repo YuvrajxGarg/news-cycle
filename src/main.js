@@ -22,12 +22,12 @@ let stage;
 
 async function boot() {
   const params = new URLSearchParams(location.search);
-  const index = await fetch("packs/index.json").then((r) => r.json());
+  const index = await fetch("packs/index.json", { cache: "no-cache" }).then((r) => r.json());
   // Daily rotation through the scheduled packs; ?pack=<id> forces one.
   const day = Math.floor(Date.now() / 86400000);
   const id = params.get("pack") || index.schedule[day % index.schedule.length];
   const entry = index.packs.find((p) => p.id === id) || index.packs[0];
-  state.pack = await fetch(entry.file).then((r) => r.json());
+  state.pack = await fetch(entry.file, { cache: "no-cache" }).then((r) => r.json());
 
   $("edition").textContent = `No. ${String(state.pack.edition || 1).padStart(3, "0")}`;
   $("dateline").textContent = new Date().toLocaleDateString("en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
