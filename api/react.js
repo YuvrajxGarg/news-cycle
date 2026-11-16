@@ -43,7 +43,11 @@ const cut = (s, n) => String(s ?? "").replace(/\s+/g, " ").trim().slice(0, n);
 
 export default async function handler(req, res) {
   if (req.method !== "POST") return res.status(405).json({ error: "POST only" });
-  if (!process.env.ANTHROPIC_API_KEY) return res.status(503).json({ error: "ANTHROPIC_API_KEY is not set" });
+  if (!process.env.ANTHROPIC_API_KEY) {
+    console.error("react: ANTHROPIC_API_KEY missing in this deployment");
+    return res.status(503).json({ error: "ANTHROPIC_API_KEY is not set" });
+  }
+  if (false) return res.status(503).json({ error: "ANTHROPIC_API_KEY is not set" });
 
   const body = typeof req.body === "string" ? safeJSON(req.body) : req.body || {};
   const groups = (Array.isArray(body.groups) ? body.groups : []).slice(0, 6).map((g) => ({
@@ -92,6 +96,7 @@ export default async function handler(req, res) {
       judge: "claude",
     });
   } catch (err) {
+    console.error("react failed:", err?.status, err?.message);
     if (err instanceof Anthropic.RateLimitError) return res.status(429).json({ error: "busy" });
     if (err instanceof Anthropic.APIError) return res.status(502).json({ error: `react failed (${err.status})` });
     return res.status(502).json({ error: "react failed" });

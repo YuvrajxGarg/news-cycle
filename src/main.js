@@ -12,7 +12,6 @@ const esc = (s) => String(s).replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&l
 const sign = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
 
 const ROUNDS = 5;
-const SECONDS = 20;
 const PER_TASTE = 10; // each taste step is worth 10 points per audience
 
 const state = { pack: null, round: 0, picks: [], started: false, busy: false, timer: null };
@@ -130,7 +129,6 @@ function groupCard(id) {
 // ---------- screens ----------
 
 function stopTimer() {
-  if (state.timer) cancelAnimationFrame(state.timer.raf);
   state.timer = null;
 }
 
@@ -155,7 +153,6 @@ function intro() {
       <li><b>A real reporter asks a real question.</b> Pick one of five answers for him.</li>
       <li><b>Four audiences are listening.</b> Each card says what they want. Each audience gives your answer from <b>−30</b> to <b>+30</b>, depending on how well its tone suits them.</li>
       <li><b>The exact line matters.</b> The judges read your exact answer as each audience and add up to <b>±5</b> each for how it lands.</li>
-      <li><b>Speed pays.</b> You have <b>${SECONDS} seconds</b>. Every second left is <b>+1</b>. Run out and you say "No comment."</li>
     </ol>`;
   const go = el("button", "btn", "Start the cycle →");
   go.onclick = () => {
@@ -193,9 +190,6 @@ function question() {
   p.append(el("div", "label", `Round ${state.round + 1} of ${ROUNDS} · Pick his answer`));
   if (r.source) p.append(el("p", "fine src", `<b>Real story:</b> ${esc(r.source)}`));
 
-  const bar = el("div", "timer");
-  bar.innerHTML = `<i></i><span>${SECONDS}</span>`;
-  p.append(bar);
 
   p.append(el("div", "sub", "Who's listening"));
   const auds = el("div", "auds");
@@ -212,30 +206,7 @@ function question() {
   });
   p.append(opts);
 
-  // countdown
-  const t0 = performance.now();
-  let lastSec = SECONDS;
-  const fill = bar.querySelector("i");
-  const num = bar.querySelector("span");
-  const loop = (t) => {
-    const left = Math.max(0, SECONDS - (t - t0) / 1000);
-    fill.style.transform = `scaleX(${left / SECONDS})`;
-    const sec = Math.ceil(left);
-    if (sec !== lastSec) {
-      lastSec = sec;
-      num.textContent = sec;
-      bar.classList.toggle("urgent", sec <= 5);
-      if (sec > 0) audio.sfx.tick(sec <= 5);
-    }
-    if (left <= 0) {
-      state.timer = null;
-      audio.sfx.buzzer();
-      answer(r, { style: "neutral", text: "No comment." }, true);
-      return;
-    }
-    state.timer = { raf: requestAnimationFrame(loop), t0 };
-  };
-  state.timer = { raf: requestAnimationFrame(loop), t0 };
+  state.timer = { live: true };
 }
 
 function onKey(e) {
@@ -293,9 +264,8 @@ function tierOf(n) {
 async function answer(r, opt, timedOut) {
   if (state.busy) return;
   state.busy = true;
-  const left = state.timer ? Math.max(0, SECONDS - (performance.now() - state.timer.t0) / 1000) : 0;
   stopTimer();
-  const speed = timedOut ? 0 : Math.ceil(left);
+  const speed = 0;
   if (!timedOut) audio.sfx.select();
   audio.music(0.12);
 
@@ -317,9 +287,6 @@ async function answer(r, opt, timedOut) {
     row.innerHTML = `<div class="brow-top"><span class="brow-name">${esc(b.name)} <small>${esc(b.kind)}</small></span><span class="pts ${b.base > 0 ? "pos" : b.base < 0 ? "neg" : ""}">${sign(b.base)}</span><span class="bonus wait">…</span></div><div class="brow-line"><span class="dots3"><i></i><i></i><i></i></span></div>`;
     table.appendChild(row);
   });
-  const sp = el("div", "brow speed");
-  sp.innerHTML = `<div class="brow-top"><span class="brow-name">Speed <small>${speed}s left</small></span><span class="pts ${speed ? "pos" : ""}">${sign(speed)}</span><span class="bonus"></span></div>`;
-  table.appendChild(sp);
   const tot = el("div", "brow total-row");
   tot.innerHTML = `<div class="brow-top"><span class="brow-name">Round total</span><b class="round-total">…</b></div>`;
   table.appendChild(tot);
@@ -360,7 +327,7 @@ async function answer(r, opt, timedOut) {
   const rt = tot.querySelector(".round-total");
   rt.className = `round-total ${sum >= 30 ? "pos" : sum < 0 ? "neg" : ""}`;
   countUp(rt, sum);
-  if (v.judge !== "claude") p.append(el("p", "fine", "Judges are offline right now; scored on tone and speed only."));
+  if (v.judge !== "claude") p.append(el("p", "fine", "Judges are offline right now; scored on tone only."));
 
   const last = state.round === ROUNDS - 1;
   const next = el("button", "btn", last ? "Print the front page →" : "Next question →");

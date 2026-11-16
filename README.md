@@ -1,7 +1,7 @@
 # Press Cycle
 
 A parody news game built on a real, unfolding news story. Each round a real reporter asks a real question
-from the news cycle. You have 20 seconds to pick one of five answers, each in a style: Neutral, Diplomatic,
+from the news cycle. Pick one of five answers, each in a style: Neutral, Diplomatic,
 Charismatic, Edgy joke, Unhinged joke. Four audience groups are listening (Washington, Beijing, Wall Street,
 the board, staff, the internet, philosophers, ethicists, the press, gamers; a different four each round).
 Five rounds, then the front page.
@@ -14,7 +14,6 @@ Five rounds, then the front page.
   that group's voice and three consequence headlines (`api/react.js`, `claude-haiku-5-5` by default,
   override with `JUDGE_MODEL`, strict JSON). Needs `ANTHROPIC_API_KEY` in the Vercel project. Without it
   the page uses the pack's canned group lines and headlines with no line bonus, so the game still works.
-- Speed: +1 per second left. Timeout = "No comment." scored as Neutral, no speed bonus.
 - Total picks the ending (`endings[].min` in the pack).
 
 Sound is procedural WebAudio (`src/audio.js`): a quiet lo-fi loop plus ticks, shutter, stamp, crowd and
@@ -33,7 +32,7 @@ Debug: `?fallback` forces the hand-built bust, `?rot=90` overrides the model's t
 ## Files
 
 - `index.html`, `style.css`: page and editorial styling (Unbounded / Geist / Geist Mono).
-- `src/main.js`: game flow (intro → 5 timed questions → front page), audience cards, scoring board, stamps, ticker, share text.
+- `src/main.js`: game flow (intro → 5 questions → front page), audience cards, scoring board, stamps, ticker, share text.
 - `src/audio.js`: music and SFX.
 - `src/stage.js`: three.js press-scrum close-up: step-and-repeat wall, mics, camera flashes, one GLB per
   expression swapped behind a flash, idle motion and per-expression reactions. Falls back to a hand-built

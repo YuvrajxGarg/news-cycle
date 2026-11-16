@@ -8,7 +8,7 @@
   "setup": {
     "kicker": "Week one",
     "headline": "He's out. Or is he?",
-    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. Five real questions. Twenty seconds each. Pick his answer."
+    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. Five real questions. Pick his answer."
   },
   "context": "Real situation, mid-November 2026: Nov 8 the Nvidia board opened an independent investigation into reports Huang was the target of a foreign intelligence effort (a contact linked to Megaspeed, a Singapore firm that bought billions in Nvidia gear and is probed over export controls). The FBI is looking into it. Nov 12 he resigned as CEO and director; CFO Colette Kress became interim CEO and Harvey Jones the first board chair. Nvidia lost over $600B in market value that week. Nov 14 two major investors urged the board to consider his return. House committee chairs want him at a closed-door briefing on Nov 18; his trip to APEC in Shenzhen is in doubt. Keep everything non-sexual.",
   "character": {
@@ -471,21 +471,21 @@
   },
   "endings": [
     {
-      "min": 380,
+      "min": 320,
       "kicker": "Final edition",
       "headline": "THE COMEBACK.",
       "dek": "The board takes him back. The jacket returns to the keynote.",
       "face": "triumphant"
     },
     {
-      "min": 260,
+      "min": 220,
       "kicker": "Final edition",
       "headline": "BACK BY CHRISTMAS?",
       "dek": "Investors are sold. The board wants one more week.",
       "face": "smug"
     },
     {
-      "min": 140,
+      "min": 110,
       "kicker": "Final edition",
       "headline": "FOUNDER EMERITUS.",
       "dek": "A nice title, a nice office, no keys.",

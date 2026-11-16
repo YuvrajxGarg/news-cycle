@@ -2,7 +2,7 @@
 
 Parody "write the scandal statement" game. Read `README.md`.
 
-Mechanic (Yuvraj, v3): 5 real questions, 20 s each, 5 written answers per question (1 neutral, 1 diplomatic, 1 charismatic, 2 risky jokes: edgy + unhinged), no free typing. 4 audience groups per question; each card shows a plain "wants" line. The five style categories are dev-only: never show style labels, colors or taste numbers to players (Yuvraj, 2026-11-16).
+Mechanic (Yuvraj, v3): 5 real questions, no timer (removed by Yuvraj 2026-11-16), 5 written answers per question (1 neutral, 1 diplomatic, 1 charismatic, 2 risky jokes: edgy + unhinged), no free typing. 4 audience groups per question; each card shows a plain "wants" line. The five style categories are dev-only: never show style labels, colors or taste numbers to players (Yuvraj, 2026-11-16).
 
 - Plain ES modules + three.js (CDN importmap), no build step. One serverless function, `api/react.js` (Claude audience reactions, needs `ANTHROPIC_API_KEY`); the page must keep working without it.
 - Content is data: one JSON pack per scandal in `packs/`. Keep the game engine subject-agnostic.
