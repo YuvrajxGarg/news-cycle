@@ -1,11 +1,14 @@
 # Press Cycle
 
-A parody news game. Someone is in a scandal; you write what they say next. Five questions, five
-statements, and every answer prints instantly as consequence headlines ("Boardroom offended",
-"Chinese government is looking for you", "AI partners pulled out"). After five you get the front page.
+A parody news game in the spirit of Quiplash, built on a real, unfolding news story. Each round a reporter
+asks a question and you get the first few words of the answer ("Let me be clear:"). Finish the sentence.
+It's scored 0-100 on how well it works as PR, and prints instantly as consequence headlines ("Boardroom
+offended", "Chinese government is looking for you", "Stock down 4%"). Five rounds, then the front page.
 
-Underneath it's a media-literacy game: each statement is read as a tone (owning it, denial, deflection,
-attack, joke, hype, corporate fog) and the result says why it landed the way it did.
+Scoring: `api/judge.js` (Vercel function) asks Claude (`claude-haiku-5-5` by default, override with
+`JUDGE_MODEL`) for a score, verdict, 3 headlines, a one-line "why" and a reaction face, as strict JSON.
+It needs `ANTHROPIC_API_KEY` in the Vercel project. Without it (or if it's slow) the page scores locally
+with `src/classify.js` keyword rules and the pack's `fallback` lines, so the game always works.
 
 ## Run it
 
@@ -15,7 +18,7 @@ Plain HTML + ES modules, no build step. three.js comes from jsDelivr (pinned 0.1
 python3 -m http.server 8000   # then open http://localhost:8000
 ```
 
-Debug: `?fallback` forces the hand-built bust, `?rot=180` rotates a generated model, `?pack=<id>` picks a pack.
+Debug: `?fallback` forces the hand-built bust, `?rot=90` overrides the model's turn (pack `character.rotationY`), `?pack=<id>` picks a pack.
 
 ## Files
 
@@ -24,10 +27,11 @@ Debug: `?fallback` forces the hand-built bust, `?rot=180` rotates a generated mo
 - `src/stage.js`: three.js press-scrum close-up: step-and-repeat wall, mics, camera flashes, one GLB per
   expression swapped behind a flash, idle motion and per-expression reactions. Falls back to a hand-built
   caricature bust if no model loads.
-- `src/classify.js`: reads a typed statement into a tone with visible keyword rules (no AI call).
+- `api/judge.js`: the Claude judge. `src/classify.js`: offline fallback scorer (keyword rules).
 - `packs/index.json`: which scandal packs exist and the daily rotation.
-- `packs/<id>.json`: one scandal: subject, setup, meters, 5 rounds × 4 options (tone, face, effects,
-  headlines, why), free-text reactions per tone, endings, lessons. Add a new scandal by adding a pack.
+- `packs/<id>.json`: one scandal: subject, setup, `context` (the real facts, sent to the judge), 5 rounds
+  (asker, outlet, question, starter), offline `fallback` per tone, endings by total score, `sources`
+  (real reporting, linked in the footer). Add a new scandal by adding a pack.
 
 ## Characters
 

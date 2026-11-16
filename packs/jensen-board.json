@@ -1,14 +1,14 @@
 {
   "id": "jensen-board",
   "edition": 1,
-  "title": "The Board Wants a Word",
+  "title": "He's Out. Or Is He?",
   "subject": "Jensen Huang",
-  "role": "CEO, Nvidia",
-  "parody": "Parody. Every statement, headline and reaction in this game is invented. Not affiliated with or endorsed by anyone depicted.",
+  "role": "Founder, resigned as Nvidia CEO on Nov 12, 2026",
+  "parody": "Parody game. The situation is real and linked below; every statement, headline and reaction in the game is invented. Not affiliated with or endorsed by anyone depicted.",
   "setup": {
-    "kicker": "Breaking",
-    "headline": "The board wants a word.",
-    "dek": "A leaked memo says the board is \"reviewing leadership\". Cameras are camped outside HQ. You write what he says next. Five questions. Every word gets printed."
+    "kicker": "Week one",
+    "headline": "He's out. Or is he?",
+    "dek": "Nvidia's board accepted Jensen Huang's resignation on Thursday, days after opening an investigation into reports he was the target of a foreign intelligence effort. CFO Colette Kress is interim CEO. Two big investors now want him back. Five questions. You get the first words of each answer; finish them."
   },
   "character": {
     "name": "Jensen",
@@ -29,527 +29,170 @@
       "shirt": "#0d0d0e",
       "glasses": "#0b0b0b"
     },
-    "rotationY": 0,
+    "rotationY": -90,
     "source": "Higgsfield: GPT Image 2.6 caricature per expression -> Tripo H3.1 image-to-3D (2026-11-16)"
   },
-  "meters": [
-    {
-      "id": "board",
-      "label": "Board"
-    },
-    {
-      "id": "stock",
-      "label": "Stock"
-    },
-    {
-      "id": "public",
-      "label": "Public"
-    },
-    {
-      "id": "partners",
-      "label": "Partners"
-    }
-  ],
   "rounds": [
     {
-      "asker": "Reporter at the door",
+      "asker": "Reporter outside his house",
       "outlet": "THE WIRE",
-      "question": "Is the board firing you?",
-      "options": [
-        {
-          "text": "Fake news. I have never been more in charge.",
-          "tone": "deny",
-          "face": "smug",
-          "effects": {
-            "board": -15,
-            "stock": 4,
-            "public": -6
-          },
-          "headlines": [
-            "Boardroom offended",
-            "Board members screenshot 'never more in charge'",
-            "Leaked minutes contradict CEO within the hour"
-          ],
-          "why": "A flat denial is a promise the next leak can break."
-        },
-        {
-          "text": "The board and I are talking. I'm not going anywhere today.",
-          "tone": "own",
-          "face": "neutral",
-          "effects": {
-            "board": 10,
-            "stock": 2,
-            "public": 6,
-            "partners": 4
-          },
-          "headlines": [
-            "Rare calm statement confuses cable news",
-            "Analysts call response 'boringly fine'"
-          ],
-          "why": "A small, true statement leaves nothing to debunk."
-        },
-        {
-          "text": "Have you SEEN our quarterly numbers?",
-          "tone": "deflect",
-          "face": "triumphant",
-          "effects": {
-            "board": -5,
-            "stock": 9,
-            "public": -6
-          },
-          "headlines": [
-            "Stock up 4%, question still unanswered",
-            "Reporter: 'that wasn't the question'"
-          ],
-          "why": "Changing the subject works until someone repeats the question."
-        },
-        {
-          "text": "*puts on sunglasses, walks straight into a server rack*",
-          "tone": "joke",
-          "face": "nervous",
-          "effects": {
-            "board": -10,
-            "stock": -4,
-            "public": 12
-          },
-          "headlines": [
-            "Clip hits 40M views by lunch",
-            "Server rack issues statement",
-            "Board: 'this is the problem'"
-          ],
-          "why": "Going viral is not the same as being believed."
-        }
-      ]
+      "question": "Did you resign, or were you pushed?",
+      "starter": "Let me be clear:"
     },
     {
-      "asker": "Financial desk",
+      "asker": "National security desk",
       "outlet": "TICKR",
-      "question": "Did you know about the internal investigation?",
-      "options": [
-        {
-          "text": "I found out about it from your article.",
-          "tone": "deny",
-          "face": "shocked",
-          "effects": {
-            "board": -18,
-            "public": -10,
-            "stock": -3
-          },
-          "headlines": [
-            "Email shows CEO was cc'd in March",
-            "Fact-checkers cancel lunch plans",
-            "'Found out from your article' now a meme"
-          ],
-          "why": "If a paper trail exists, 'I didn't know' becomes the story."
-        },
-        {
-          "text": "Yes. I cooperated, and I'll keep cooperating.",
-          "tone": "own",
-          "face": "neutral",
-          "effects": {
-            "board": 14,
-            "public": 6,
-            "stock": -2
-          },
-          "headlines": [
-            "Lawyers relieved, cable bookers disappointed",
-            "Story loses steam by dinner"
-          ],
-          "why": "Admitting the knowable fact takes the leak's power away."
-        },
-        {
-          "text": "Investigations are how great companies stay great.",
-          "tone": "vague",
-          "face": "smug",
-          "effects": {
-            "board": -4,
-            "public": -10
-          },
-          "headlines": [
-            "Comms team adds 'stay great' to banned phrases",
-            "Quote framed on 4,000 LinkedIn walls"
-          ],
-          "why": "Corporate fog reads as hiding something."
-        },
-        {
-          "text": "The real investigation should be into who leaked this.",
-          "tone": "attack",
-          "face": "angry",
-          "effects": {
-            "board": -14,
-            "public": -10,
-            "partners": -4
-          },
-          "headlines": [
-            "Leak hunt leaks",
-            "Staff start group chat called 'the real investigation'"
-          ],
-          "why": "Going after the leaker confirms the leak is real."
-        }
-      ]
+      "question": "Did you know your contact was an alleged spy?",
+      "starter": "In my defense,"
     },
     {
-      "asker": "Beijing correspondent",
+      "asker": "Capitol Hill reporter",
       "outlet": "GLOBAL DESK",
-      "question": "Will the shake-up change your China plans?",
-      "options": [
-        {
-          "text": "Honestly? China is our favourite customer.",
-          "tone": "hype",
-          "face": "triumphant",
-          "effects": {
-            "board": -10,
-            "partners": -10,
-            "stock": 5,
-            "public": -4
-          },
-          "headlines": [
-            "Washington is looking for you",
-            "Senators draft angry letter in record time",
-            "Export lawyers cancel weekend"
-          ],
-          "why": "A line written for one audience is heard by all of them."
-        },
-        {
-          "text": "We follow every export rule, in every country. Nothing changes.",
-          "tone": "own",
-          "face": "neutral",
-          "effects": {
-            "board": 6,
-            "partners": 10,
-            "stock": 2
-          },
-          "headlines": [
-            "Export lawyers nod approvingly",
-            "Nobody clips it, which is the point"
-          ],
-          "why": "Boring and checkable beats exciting and quotable."
-        },
-        {
-          "text": "No comment. But I love dumplings.",
-          "tone": "joke",
-          "face": "smug",
-          "effects": {
-            "public": 10,
-            "partners": -5,
-            "board": -4
-          },
-          "headlines": [
-            "State TV runs 'he loves dumplings' on loop",
-            "Dumpling futures rally"
-          ],
-          "why": "A joke is still a quote, and quotes travel without context."
-        },
-        {
-          "text": "If they fire me, China wins.",
-          "tone": "attack",
-          "face": "angry",
-          "effects": {
-            "board": -16,
-            "partners": -10,
-            "public": -6,
-            "stock": -5
-          },
-          "headlines": [
-            "Chinese government is looking for you",
-            "Washington is also looking for you",
-            "Board: 'please stop saying China wins'"
-          ],
-          "why": "Fear works as a headline and fails as an argument."
-        }
-      ]
+      "question": "Congress wants you at a closed-door briefing on the 18th. Will you show?",
+      "starter": "To Congress, I say"
     },
     {
-      "asker": "Your biggest AI partner's CEO",
-      "outlet": "POSTED ONLINE",
-      "question": "\"Watching this situation closely 👀\" Respond.",
-      "options": [
-        {
-          "text": "Quote-post: \"Watching is free. Our chips are not.\"",
-          "tone": "attack",
-          "face": "smug",
-          "effects": {
-            "partners": -25,
-            "stock": -10,
-            "public": 10
-          },
-          "headlines": [
-            "AI partners pulled out",
-            "Nvidia stock down",
-            "Partner's comms team: 'oh no'"
-          ],
-          "why": "Winning the reply can cost you the relationship."
-        },
-        {
-          "text": "\"We spoke this morning. Shipments are on schedule.\"",
-          "tone": "own",
-          "face": "neutral",
-          "effects": {
-            "partners": 16,
-            "stock": 6,
-            "board": 6
-          },
-          "headlines": [
-            "Partner deletes 👀",
-            "Supply chain exhales"
-          ],
-          "why": "A checkable fact ends a vague rumour faster than a comeback."
-        },
-        {
-          "text": "Announce a surprise product: the Jacket GPU.",
-          "tone": "hype",
-          "face": "triumphant",
-          "effects": {
-            "stock": 8,
-            "public": 10,
-            "partners": -6,
-            "board": -10
-          },
-          "headlines": [
-            "Jacket GPU pre-orders crash website",
-            "Board learns about product from social media"
-          ],
-          "why": "A shiny distraction buys a news cycle, not trust."
-        },
-        {
-          "text": "Say nothing for 72 hours.",
-          "tone": "vague",
-          "face": "nervous",
-          "effects": {
-            "partners": -10,
-            "stock": -8,
-            "public": -6
-          },
-          "headlines": [
-            "Silence read as panic",
-            "'Is he OK?' trends worldwide"
-          ],
-          "why": "When you leave a gap, someone else fills it."
-        }
-      ]
-    },
-    {
-      "asker": "Final press conference",
+      "asker": "Shareholder on the call",
       "outlet": "LIVE",
-      "question": "The board is in the room. Last words?",
-      "options": [
-        {
-          "text": "I made mistakes. I'll own them, whatever the board decides.",
-          "tone": "own",
-          "face": "sad",
-          "effects": {
-            "board": 18,
-            "public": 14,
-            "stock": 2
-          },
-          "headlines": [
-            "Room goes quiet",
-            "Even critics: 'that was decent'"
-          ],
-          "why": "Owning it early is cheaper than being caught later."
-        },
-        {
-          "text": "This company IS me. Remove me and it collapses.",
-          "tone": "hype",
-          "face": "angry",
-          "effects": {
-            "board": -25,
-            "stock": -10,
-            "public": -8
-          },
-          "headlines": [
-            "Board removes him slightly faster",
-            "Ego now measured in teraflops"
-          ],
-          "why": "Making it about yourself proves the board's point."
-        },
-        {
-          "text": "\"Thank you all. Any questions? No? Great.\" *leaves*",
-          "tone": "deflect",
-          "face": "nervous",
-          "effects": {
-            "board": -6,
-            "public": -12
-          },
-          "headlines": [
-            "Shortest press conference in history",
-            "Reporters still shouting at empty podium"
-          ],
-          "why": "Dodging on camera is itself the footage."
-        },
-        {
-          "text": "I'm stepping back to focus on my jacket collection.",
-          "tone": "joke",
-          "face": "triumphant",
-          "effects": {
-            "board": 4,
-            "public": 16,
-            "stock": -5
-          },
-          "headlines": [
-            "Leather market up 30%",
-            "Board: 'we'll take it'"
-          ],
-          "why": "Self-mockery lowers the temperature. It doesn't answer the question."
-        }
-      ]
+      "question": "$600 billion gone in a week. What do you tell us?",
+      "starter": "Dear shareholders, relax:"
+    },
+    {
+      "asker": "Two big investors",
+      "outlet": "EXCLUSIVE",
+      "question": "We want you back as CEO. What's your pitch to the board?",
+      "starter": "Take me back because"
     }
   ],
-  "freeText": {
+  "fallback": {
     "own": {
       "face": "neutral",
-      "effects": {
-        "board": 10,
-        "public": 6,
-        "stock": 1
-      },
       "headlines": [
         "Statement too reasonable to clip",
-        "News cycle moves on, disappointed"
+        "Board quietly takes notes",
+        "Legal team exhales"
       ],
-      "why": "Plain and true leaves nothing to debunk."
+      "why": "Plain and true leaves nothing to debunk.",
+      "score": 72,
+      "verdict": "Owned it"
     },
     "deny": {
       "face": "smug",
-      "effects": {
-        "board": -12,
-        "public": -8
-      },
       "headlines": [
-        "Fact-checkers have entered the chat",
-        "Receipts surface within the hour"
+        "FBI has entered the chat",
+        "Receipts surface within the hour",
+        "Stock down 4%"
       ],
-      "why": "Every denial is a promise the next leak can break."
+      "why": "Every denial is a promise the next leak can break.",
+      "score": 24,
+      "verdict": "Flat denial"
     },
     "deflect": {
       "face": "nervous",
-      "effects": {
-        "board": -5,
-        "public": -8,
-        "stock": 3
-      },
       "headlines": [
         "Question asked again, louder",
-        "Pundits: 'he didn't answer'"
+        "Congress adds a chair for him anyway"
       ],
-      "why": "Reporters repeat the question. Viewers notice."
+      "why": "Reporters repeat the question. Viewers notice.",
+      "score": 42,
+      "verdict": "Smooth dodge"
     },
     "attack": {
       "face": "angry",
-      "effects": {
-        "board": -12,
-        "partners": -8,
-        "public": -6
-      },
       "headlines": [
         "Boardroom offended",
-        "Lawyers pick up the phone"
+        "Chinese government is looking for you",
+        "Washington is also looking for you"
       ],
-      "why": "Attacking the messenger tells everyone the message was real."
+      "why": "Attacking the messenger tells everyone the message was real.",
+      "score": 14,
+      "verdict": "Shot the messenger"
     },
     "joke": {
       "face": "triumphant",
-      "effects": {
-        "public": 10,
-        "board": -6
-      },
       "headlines": [
-        "Clip goes viral, problem does not go away",
-        "Meme accounts thank you"
+        "Clip goes viral, problem does not",
+        "Leather jacket trends worldwide"
       ],
-      "why": "Jokes win the clip, not the argument."
+      "why": "Jokes win the clip, not the argument.",
+      "score": 62,
+      "verdict": "Got the laugh"
     },
     "hype": {
       "face": "triumphant",
-      "effects": {
-        "stock": 6,
-        "board": -8,
-        "public": -4
-      },
       "headlines": [
-        "Stock up, credibility down",
+        "Stock up 2%, credibility down 20%",
         "Analysts: 'that's a lot of adjectives'"
       ],
-      "why": "Big numbers move the stock, not the story."
+      "why": "Big numbers move the stock, not the story.",
+      "score": 45,
+      "verdict": "Pure hype"
     },
     "vague": {
       "face": "smug",
-      "effects": {
-        "public": -8,
-        "board": -4
-      },
       "headlines": [
         "Statement says nothing, beautifully",
-        "Translators give up"
+        "Interim CEO looks relieved"
       ],
-      "why": "Corporate fog reads as hiding something."
+      "why": "Corporate fog reads as hiding something.",
+      "score": 30,
+      "verdict": "Corporate fog"
     }
   },
   "endings": [
     {
-      "id": "survives",
-      "when": {
-        "board": [
-          62,
-          100
-        ]
-      },
+      "min": 400,
       "kicker": "Final edition",
-      "headline": "STILL THE CEO.",
-      "dek": "He survives the cycle. The jacket stays on.",
+      "headline": "THE COMEBACK.",
+      "dek": "The board takes him back. The jacket returns to the keynote.",
       "face": "triumphant"
     },
     {
-      "id": "beloved",
-      "when": {
-        "board": [
-          0,
-          39
-        ],
-        "public": [
-          60,
-          100
-        ]
-      },
+      "min": 300,
       "kicker": "Final edition",
-      "headline": "OUSTED, BELOVED.",
-      "dek": "Fired on Friday. Booked for three keynotes by Monday.",
+      "headline": "BACK BY CHRISTMAS?",
+      "dek": "Investors are sold. The board wants one more week.",
       "face": "smug"
     },
     {
-      "id": "interim",
-      "when": {
-        "board": [
-          40,
-          61
-        ]
-      },
+      "min": 200,
       "kicker": "Final edition",
-      "headline": "THE INTERIM ERA BEGINS.",
-      "dek": "He keeps the title. Someone else gets the keys.",
+      "headline": "FOUNDER EMERITUS.",
+      "dek": "A nice title, a nice office, no keys.",
       "face": "nervous"
     },
     {
-      "id": "ousted",
-      "when": {
-        "board": [
-          0,
-          39
-        ]
-      },
+      "min": 100,
       "kicker": "Final edition",
-      "headline": "OUSTED.",
-      "dek": "The board has accepted a resignation he never offered.",
+      "headline": "STILL OUT.",
+      "dek": "The board thanks him for his contributions. Again.",
       "face": "sad"
+    },
+    {
+      "min": 0,
+      "kicker": "Final edition",
+      "headline": "SUBPOENAED.",
+      "dek": "Legal has asked everyone to stop typing.",
+      "face": "shocked"
     }
   ],
-  "lessons": {
-    "own": "Small true statements gave the leaks nothing to find.",
-    "deny": "Every denial became a promise the next leak could break.",
-    "deflect": "Changing the subject works once. Reporters repeat the question.",
-    "attack": "Attacking the messenger told everyone the message was real.",
-    "joke": "Jokes won the clip, not the argument.",
-    "hype": "Big numbers moved the stock, not the story.",
-    "vague": "Corporate fog read as hiding something."
-  }
+  "context": "Real situation, mid-November 2026: Nov 8 the Nvidia board opened an independent investigation into reports Huang was the target of a foreign intelligence effort (a contact linked to Megaspeed, a Singapore firm that bought billions in Nvidia gear and is probed over export controls). The FBI is looking into it. Nov 12 he resigned as CEO and director; CFO Colette Kress became interim CEO and Harvey Jones the first board chair. Nvidia lost over $600B in market value that week. Nov 14 two major investors urged the board to consider his return. House committee chairs want him at a closed-door briefing on Nov 18; his trip to APEC in Shenzhen is in doubt. Keep everything non-sexual.",
+  "sources": [
+    {
+      "label": "Nvidia board statement (Nov 8)",
+      "url": "https://nvidianews.nvidia.com/news/statement-from-nvidia-board-of-directors"
+    },
+    {
+      "label": "Nvidia: CEO transition (Nov 12)",
+      "url": "https://nvidianews.nvidia.com/news/nvidia-announces-ceo-transition"
+    },
+    {
+      "label": "Al Jazeera: can the board remove its founder?",
+      "url": "https://www.aljazeera.com/news/2026/11/12/nvidia-board-weighs-jensen-huangs-future-can-it-remove-its-founder"
+    },
+    {
+      "label": "CNBC: investors urge his return (Nov 14)",
+      "url": "https://www.cnbc.com/2026/11/14/nvidia-investors-jensen-huang-return-board-letter.html"
+    }
+  ]
 }
