@@ -77,6 +77,7 @@
     "washington": {
       "name": "Washington",
       "kind": "Political",
+      "wants": "Wants seriousness. Hates jokes about security.",
       "taste": {
         "neutral": 1,
         "diplomatic": 2,
@@ -95,6 +96,7 @@
     "beijing": {
       "name": "Beijing",
       "kind": "Political",
+      "wants": "Wants respect. Hates being the punchline.",
       "taste": {
         "neutral": 1,
         "diplomatic": 3,
@@ -113,6 +115,7 @@
     "wallst": {
       "name": "Wall Street",
       "kind": "Capitalist",
+      "wants": "Wants confidence and growth. Hates chaos.",
       "taste": {
         "neutral": 0,
         "diplomatic": 1,
@@ -131,6 +134,7 @@
     "board": {
       "name": "The Board",
       "kind": "Governance",
+      "wants": "Wants calm governance. No drama, no jokes.",
       "taste": {
         "neutral": 1,
         "diplomatic": 3,
@@ -149,6 +153,7 @@
     "staff": {
       "name": "Nvidia Staff",
       "kind": "Sociological",
+      "wants": "Wants their founder fired up.",
       "taste": {
         "neutral": 0,
         "diplomatic": 1,
@@ -167,6 +172,7 @@
     "internet": {
       "name": "The Internet",
       "kind": "Sociological",
+      "wants": "Wants chaos and memes. Hates corporate speak.",
       "taste": {
         "neutral": -1,
         "diplomatic": -1,
@@ -185,6 +191,7 @@
     "philosophers": {
       "name": "Philosophers",
       "kind": "Philosophical",
+      "wants": "Wants honesty, or absurdity that says something true.",
       "taste": {
         "neutral": 0,
         "diplomatic": 2,
@@ -203,6 +210,7 @@
     "ethicists": {
       "name": "Ethicists",
       "kind": "Philosophical",
+      "wants": "Wants accountability, not charm.",
       "taste": {
         "neutral": 1,
         "diplomatic": 2,
@@ -221,6 +229,7 @@
     "press": {
       "name": "The Press",
       "kind": "Media",
+      "wants": "Wants a front-page quote. Hates saying nothing.",
       "taste": {
         "neutral": -2,
         "diplomatic": 0,
@@ -239,6 +248,7 @@
     "gamers": {
       "name": "Gamers",
       "kind": "Customers",
+      "wants": "Wants swagger, memes and cheaper GPUs.",
       "taste": {
         "neutral": 0,
         "diplomatic": -1,

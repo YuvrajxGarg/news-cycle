@@ -32,7 +32,7 @@ export class Stage {
     container.appendChild(this.renderer.domElement);
 
     this.scene = new THREE.Scene();
-    this.scene.background = new THREE.Color("#1b1a19");
+    this.scene.background = new THREE.Color("#d9d1bf");
     // soft studio reflections so PBR materials from generated models don't go black
     const pmrem = new THREE.PMREMGenerator(this.renderer);
     this.scene.environment = pmrem.fromScene(new RoomEnvironment(), 0.04).texture;
@@ -92,44 +92,81 @@ export class Stage {
   }
 
   _backdrop() {
-    // Step-and-repeat wall, drawn by hand on a canvas.
+    // Step-and-repeat wall: cream board with small ink logos on an even, staggered grid.
+    // Drawn on a canvas once the web fonts are ready, and measured so marks never overlap.
     const c = document.createElement("canvas");
-    c.width = 1024;
-    c.height = 512;
-    const g = c.getContext("2d");
-    g.fillStyle = "#26364a";
-    g.fillRect(0, 0, c.width, c.height);
-    g.font = "800 22px Unbounded, Geist, system-ui, sans-serif";
-    g.textAlign = "center";
-    g.textBaseline = "middle";
-    const words = ["PRESS CYCLE", "SHAREHOLDER DAY", "PRESS CYCLE", "INVESTOR Q&A"];
-    for (let row = 0; row < 10; row++) {
-      for (let col = 0; col < 6; col++) {
-        const x = col * 200 + (row % 2 ? 100 : 0);
-        const y = row * 54 + 24;
-        g.fillStyle = row % 2 ? "rgba(255,201,60,0.42)" : "rgba(255,255,255,0.22)";
-        g.fillText(words[(row + col) % words.length], x, y);
-      }
-    }
+    c.width = 2048;
+    c.height = 1024;
     const tex = new THREE.CanvasTexture(c);
     tex.colorSpace = THREE.SRGBColorSpace;
-    tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-    tex.repeat.set(1.2, 1.2);
+    tex.anisotropy = 4;
+    const draw = () => {
+      const g = c.getContext("2d");
+      g.fillStyle = "#ece5d4";
+      g.fillRect(0, 0, c.width, c.height);
+      const cellW = 300;
+      const cellH = 120;
+      const mark = (x, y) => {
+        g.font = "800 26px Unbounded, Geist, system-ui, sans-serif";
+        const w1 = g.measureText("PRESS").width;
+        const w2 = g.measureText("CYCLE").width;
+        const dot = 10;
+        const gap = 8;
+        let total = w1 + gap + dot * 2 + gap + w2;
+        const k = Math.min(1, (cellW - 70) / total);
+        g.save();
+        g.translate(x, y);
+        g.scale(k, k);
+        total *= 1;
+        let cx = -total / 2;
+        g.textBaseline = "middle";
+        g.textAlign = "left";
+        g.globalAlpha = 0.5;
+        g.fillStyle = "#1b1a18";
+        g.fillText("PRESS", cx, 0);
+        cx += w1 + gap + dot;
+        g.fillStyle = "#e8352b";
+        g.beginPath();
+        g.arc(cx, 1, dot, 0, Math.PI * 2);
+        g.fill();
+        g.fillStyle = "#ffc93c";
+        g.beginPath();
+        g.arc(cx, 1, dot, -Math.PI / 2, 0);
+        g.lineTo(cx, 1);
+        g.fill();
+        cx += dot + gap;
+        g.fillStyle = "#1b1a18";
+        g.fillText("CYCLE", cx, 0);
+        g.font = "600 13px 'Geist Mono', ui-monospace, monospace";
+        g.textAlign = "center";
+        g.fillStyle = "rgba(27,26,24,0.45)";
+        g.font = "600 11px 'Geist Mono', ui-monospace, monospace";
+        g.fillText("P A R O D Y   N E W S", 0, 28);
+        g.restore();
+      };
+      for (let row = -1; row < c.height / cellH + 1; row++) {
+        for (let col = -1; col < c.width / cellW + 1; col++) {
+          mark(col * cellW + (row % 2 ? cellW / 2 : 0) + cellW / 2, row * cellH + cellH / 2);
+        }
+      }
+      // soft pool of light behind the head, falling off to the edges
+      const v = g.createRadialGradient(c.width / 2, c.height * 0.45, 60, c.width / 2, c.height * 0.45, c.width * 0.62);
+      v.addColorStop(0, "rgba(255,248,232,0.35)");
+      v.addColorStop(1, "rgba(60,50,40,0.28)");
+      g.fillStyle = v;
+      g.fillRect(0, 0, c.width, c.height);
+      tex.needsUpdate = true;
+    };
+    draw();
+    document.fonts?.ready.then(draw);
     const wall = new THREE.Mesh(
-      new THREE.PlaneGeometry(9, 5),
-      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.9, color: "#9aa3ad" }),
+      new THREE.PlaneGeometry(9, 4.5),
+      new THREE.MeshStandardMaterial({ map: tex, roughness: 0.95 }),
     );
     wall.position.set(0, 1.6, -2.4);
     wall.receiveShadow = true;
     this.scene.add(wall);
     this.wall = wall;
-    // soft vignette pool of light behind the head
-    const glow = new THREE.Mesh(
-      new THREE.CircleGeometry(1.4, 48),
-      new THREE.MeshBasicMaterial({ color: "#ffd38a", transparent: true, opacity: 0.12, depthWrite: false }),
-    );
-    glow.position.set(0, 1.55, -2.38);
-    this.scene.add(glow);
   }
 
   _mics() {

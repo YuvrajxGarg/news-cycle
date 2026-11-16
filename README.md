@@ -8,7 +8,8 @@ Five rounds, then the front page.
 
 ## Scoring (shown to the player)
 
-- Each audience card shows its taste for every style, from -3 to +3. Each taste point = 10 points.
+- Styles are internal (dev-only), never shown to players. Each audience card shows a plain "wants" line; behind it
+  each group has a taste per style from -3 to +3, and each taste point = 10 points.
 - Claude reads the exact line as each audience and adds -5..+5 per group, plus a one-line reaction in
   that group's voice and three consequence headlines (`api/react.js`, `claude-haiku-5-5` by default,
   override with `JUDGE_MODEL`, strict JSON). Needs `ANTHROPIC_API_KEY` in the Vercel project. Without it
@@ -40,7 +41,7 @@ Debug: `?fallback` forces the hand-built bust, `?rot=90` overrides the model's t
 - `api/react.js`: Claude audience reactions.
 - `packs/index.json`: which scandal packs exist and the daily rotation.
 - `packs/<id>.json`: one scandal: subject, setup, `context` (the real facts, sent to the judge), `styles`,
-  `groups` (name, kind, persona, `taste` per style, fallback `lines`), 5 `rounds` (asker, outlet, real
+  `groups` (name, kind, `wants` shown to players, persona, `taste` per style, fallback `lines`), 5 `rounds` (asker, outlet, real
   question, `source` note, 4 group ids, 5 options with style), `faces` and `headlines` by round tier,
   endings by total score, `sources`
   (real reporting, linked in the footer). Add a new scandal by adding a pack.

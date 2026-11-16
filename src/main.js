@@ -14,8 +14,6 @@ const sign = (n) => (n > 0 ? `+${n}` : n < 0 ? `−${-n}` : "0");
 const ROUNDS = 5;
 const SECONDS = 20;
 const PER_TASTE = 10; // each taste step is worth 10 points per audience
-const STYLE_ORDER = ["neutral", "diplomatic", "charismatic", "edgy", "unhinged"];
-const SHORT = { neutral: "NEU", diplomatic: "DIP", charismatic: "CHA", edgy: "EDGY", unhinged: "WILD" };
 
 const state = { pack: null, round: 0, picks: [], started: false, busy: false, timer: null };
 let stage;
@@ -58,7 +56,6 @@ function setupMute() {
   paint();
 }
 
-const styleOf = (s) => state.pack.styles[s] || { label: s, color: "#8a857a" };
 const total = () => state.picks.reduce((n, p) => n + p.points, 0);
 
 function renderScore() {
@@ -120,21 +117,13 @@ function showQuestion(r) {
   $("qText").textContent = r.question;
 }
 
-function tag(style) {
-  const s = styleOf(style);
-  return `<span class="tag" style="--c:${s.color}">${esc(s.label)}</span>`;
-}
 
-// One audience card: who they are and their visible taste chart (-3..+3 per style).
+// One audience card: who they are and what they want. Style tastes stay hidden (dev-only categories).
 function groupCard(id) {
   const g = state.pack.groups[id];
   const card = el("div", "aud");
   card.dataset.id = id;
-  const chips = STYLE_ORDER.map((s) => {
-    const v = g.taste[s] || 0;
-    return `<span class="chip ${v > 0 ? "pos" : v < 0 ? "neg" : "zero"}" data-style="${s}" style="--c:${styleOf(s).color}" title="${esc(styleOf(s).label)}: ${sign(v * PER_TASTE)} pts"><i>${SHORT[s]}</i><b>${sign(v)}</b></span>`;
-  }).join("");
-  card.innerHTML = `<div class="aud-top"><span class="aud-name">${esc(g.name)}</span><span class="aud-kind">${esc(g.kind)}</span></div><div class="chips">${chips}</div>`;
+  card.innerHTML = `<div class="aud-top"><span class="aud-name">${esc(g.name)}</span><span class="aud-kind">${esc(g.kind)}</span></div><p class="aud-wants">${esc(g.wants || g.persona)}</p>`;
   return card;
 }
 
@@ -163,9 +152,9 @@ function intro() {
   rules.innerHTML = `
     <div class="label">How you score</div>
     <ol>
-      <li><b>A real reporter asks a real question.</b> You get five answers, each in a style: ${STYLE_ORDER.map(tag).join(" ")}</li>
-      <li><b>Four audiences are listening.</b> Each one's taste is printed on its card: from <b>−3</b> (hates that style) to <b>+3</b> (loves it). Every point is worth <b>${PER_TASTE}</b>.</li>
-      <li><b>The exact line matters.</b> Claude reads your answer as each audience and adds <b>−5 to +5</b> each for how it lands.</li>
+      <li><b>A real reporter asks a real question.</b> Pick one of five answers for him.</li>
+      <li><b>Four audiences are listening.</b> Each card says what they want. Each audience gives your answer from <b>−30</b> to <b>+30</b>, depending on how well its tone suits them.</li>
+      <li><b>The exact line matters.</b> The judges read your exact answer as each audience and add up to <b>±5</b> each for how it lands.</li>
       <li><b>Speed pays.</b> You have <b>${SECONDS} seconds</b>. Every second left is <b>+1</b>. Run out and you say "No comment."</li>
     </ol>`;
   const go = el("button", "btn", "Start the cycle →");
@@ -217,11 +206,7 @@ function question() {
   const opts = el("div", "options");
   shuffle(r.options).forEach((o, i) => {
     const b = el("button", "opt");
-    b.style.setProperty("--c", styleOf(o.style).color);
-    b.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body">${tag(o.style)}<span class="opt-text">${esc(o.text)}</span></span>`;
-    const hl = (on) => auds.querySelectorAll(`.chip[data-style="${o.style}"]`).forEach((c) => c.classList.toggle("hl", on));
-    b.onmouseenter = b.onfocus = () => hl(true);
-    b.onmouseleave = b.onblur = () => hl(false);
+    b.innerHTML = `<span class="opt-key">${i + 1}</span><span class="opt-body"><span class="opt-text">${esc(o.text)}</span></span>`;
     b.onclick = () => answer(r, o, false);
     opts.appendChild(b);
   });
@@ -262,7 +247,7 @@ function onKey(e) {
   }
 }
 
-// Claude reads the line as each audience. If it isn't set up or is slow, use the pack's lines.
+// The judges (Claude, server side) read the line as each audience. If it isn't set up or is slow, use the pack's lines.
 async function react(r, opt, base) {
   const pack = state.pack;
   try {
@@ -323,7 +308,7 @@ async function answer(r, opt, timedOut) {
   const p = $("panel");
   p.innerHTML = "";
   p.append(el("div", "label", `Round ${state.round + 1} · ${timedOut ? "Out of time" : "Going to print"}`));
-  p.append(el("p", "quote", `${tag(opt.style)} “${esc(opt.text)}”`));
+  p.append(el("p", "quote", `“${esc(opt.text)}”`));
 
   const table = el("div", "board");
   base.forEach((b) => {
@@ -375,7 +360,7 @@ async function answer(r, opt, timedOut) {
   const rt = tot.querySelector(".round-total");
   rt.className = `round-total ${sum >= 30 ? "pos" : sum < 0 ? "neg" : ""}`;
   countUp(rt, sum);
-  if (v.judge !== "claude") p.append(el("p", "fine", "Line bonuses need the live judge; scored on taste and speed only."));
+  if (v.judge !== "claude") p.append(el("p", "fine", "Judges are offline right now; scored on tone and speed only."));
 
   const last = state.round === ROUNDS - 1;
   const next = el("button", "btn", last ? "Print the front page →" : "Next question →");
@@ -427,7 +412,7 @@ function frontPage() {
   const recap = el("div", "recap");
   state.picks.forEach((x) => {
     const row = el("div", "recap-row");
-    row.innerHTML = `<span class="recap-n">${sign(x.points)}</span><div><div class="recap-h">${esc(x.headlines[0])}</div><div class="recap-q">${tag(x.style)} “${esc(x.text)}”</div></div>`;
+    row.innerHTML = `<span class="recap-n">${sign(x.points)}</span><div><div class="recap-h">${esc(x.headlines[0])}</div><div class="recap-q">“${esc(x.text)}”</div></div>`;
     recap.appendChild(row);
   });
   front.append(recap);
@@ -444,11 +429,9 @@ function frontPage() {
 }
 
 function copyResult(end, sum) {
-  const icon = { neutral: "⬜", diplomatic: "🟦", charismatic: "🟨", edgy: "🟥", unhinged: "🟪" };
   const lines = [
     `PRESS CYCLE · ${state.pack.title}`,
     `${end.headline} ${sum} pts`,
-    state.picks.map((x) => icon[x.style] || "⬜").join(""),
     ...state.picks.map((x, i) => `${i + 1} ${x.points >= 40 ? "📈" : x.points < 0 ? "📉" : "➖"} ${x.headlines[0]}`),
     location.origin + location.pathname,
   ];

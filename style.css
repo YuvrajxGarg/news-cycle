@@ -455,3 +455,5 @@ button { font: inherit; color: inherit; cursor: pointer; }
   .mast-right { gap: 6px; }
   .mute svg { width: 15px; height: 15px; }
 }
+.aud-wants { margin: 0; font: 500 13px/1.35 var(--sans); color: var(--ink-2); }
+.opt { border-left-width: 2px; }
