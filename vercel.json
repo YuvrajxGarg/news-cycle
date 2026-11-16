@@ -1,0 +1,11 @@
+{
+  "cleanUrls": true,
+  "git": { "deploymentEnabled": { "main": true, "*": false } },
+  "rewrites": [
+    { "source": "/hf/:path*", "destination": "https://d8j0ntlcm91z4.cloudfront.net/:path*" }
+  ],
+  "headers": [
+    { "source": "/hf/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }] },
+    { "source": "/packs/(.*)", "headers": [{ "key": "Cache-Control", "value": "public, max-age=300" }] }
+  ]
+}

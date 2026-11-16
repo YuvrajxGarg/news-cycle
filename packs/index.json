@@ -1,0 +1,6 @@
+{
+  "schedule": ["jensen-board"],
+  "packs": [
+    { "id": "jensen-board", "file": "packs/jensen-board.json", "subject": "Jensen Huang" }
+  ]
+}

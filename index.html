@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <title>Press Cycle</title>
+  <meta name="description" content="Five questions. Five statements. Every word gets printed. A parody news game." />
+  <meta name="theme-color" content="#f2eee3" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;600&family=Geist:wght@400;500;600;700&family=Unbounded:wght@500;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+  <script type="importmap">
+    {
+      "imports": {
+        "three": "https://cdn.jsdelivr.net/npm/three@0.170.0/build/three.module.min.js",
+        "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.170.0/examples/jsm/"
+      }
+    }
+  </script>
+</head>
+<body>
+  <header class="mast">
+    <div class="mast-row">
+      <div class="brand"><span class="brand-word">Press</span><span class="brand-dot" aria-hidden="true"></span><span class="brand-word">Cycle</span></div>
+      <div class="dots" id="dots" aria-label="Progress"></div>
+    </div>
+    <div class="mast-rule">
+      <span id="edition">No. 001</span>
+      <span id="dateline"></span>
+      <span class="parody-tag">Parody edition</span>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="stage-wrap" aria-label="Press conference">
+      <div id="stage" class="stage"></div>
+      <div class="flash" id="flash"></div>
+      <div class="q-card" id="qcard" hidden>
+        <div class="q-meta"><span class="q-outlet" id="qOutlet"></span><span class="q-asker" id="qAsker"></span></div>
+        <p class="q-text" id="qText"></p>
+      </div>
+      <div class="stamps" id="stamps"></div>
+      <div class="live"><span class="live-dot"></span>Live</div>
+      <div class="ticker" aria-hidden="true"><div class="ticker-track" id="ticker"></div></div>
+    </section>
+
+    <aside class="desk">
+      <div class="meters" id="meters"></div>
+      <div class="panel" id="panel" aria-live="polite"></div>
+    </aside>
+  </main>
+
+  <footer class="foot" id="foot"></footer>
+
+  <script type="module" src="src/main.js"></script>
+</body>
+</html>
